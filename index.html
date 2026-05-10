@@ -1,89 +1,1727 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Prestaya 💰 v2</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+<style>
+:root {
+  --bg: #f0f4f8; --bg2: #ffffff; --bg3: #e8edf2; --text: #1a202c; --text2: #4a5568;
+  --text3: #718096; --border: #cbd5e0; --accent: #3182ce; --accent2: #2b6cb0;
+  --accent-light: #ebf8ff; --success: #38a169; --warning: #dd6b20; --danger: #e53e3e;
+  --card: #ffffff; --shadow: 0 2px 8px rgba(0,0,0,0.08); --shadow2: 0 4px 16px rgba(0,0,0,0.12);
+  --radius: 12px; --radius2: 8px; --input-bg: #ffffff;
+  --green-bg: #f0fff4; --green-text: #276749; --green-border: #9ae6b4;
+  --orange-light-bg: #fffaf0; --orange-light-text: #c05621; --orange-light-border: #fbd38d;
+  --orange-dark-bg: #fff3e0; --orange-dark-text: #9c4221; --orange-dark-border: #fb923c;
+  --red-light-bg: #fff5f5; --red-light-text: #c53030; --red-light-border: #feb2b2;
+  --red-moroso-bg: #fef2f2; --red-moroso-text: #991b1b; --red-moroso-border: #f87171;
+}
+[data-theme="dark"] {
+  --bg: #1a1f2e; --bg2: #252d3d; --bg3: #2d3748; --text: #e2e8f0; --text2: #a0aec0;
+  --text3: #718096; --border: #4a5568; --accent: #63b3ed; --accent2: #4299e1;
+  --accent-light: #1a365d; --card: #252d3d; --shadow: 0 2px 8px rgba(0,0,0,0.4);
+  --shadow2: 0 4px 16px rgba(0,0,0,0.5); --input-bg: #2d3748;
+  --green-bg: #1c3829; --green-text: #68d391; --green-border: #2f855a;
+  --orange-light-bg: #3d2a1a; --orange-light-text: #fbd38d; --orange-light-border: #c05621;
+  --orange-dark-bg: #3d1f0a; --orange-dark-text: #fb923c; --orange-dark-border: #9c4221;
+  --red-light-bg: #3d1515; --red-light-text: #feb2b2; --red-light-border: #c53030;
+  --red-moroso-bg: #450a0a; --red-moroso-text: #fca5a5; --red-moroso-border: #991b1b;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background 0.3s,color 0.3s;}
+.view{display:none;min-height:100vh;padding-bottom:20px;}
+.view.active{display:block;}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.topbar-title{font-size:18px;font-weight:700;flex:1;color:var(--text);}
+.topbar .logo{font-size:22px;font-weight:800;color:var(--accent);letter-spacing:-0.5px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border:none;border-radius:var(--radius2);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;text-decoration:none;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px);}
+.btn-success{background:#38a169;color:#fff;}
+.btn-success:hover{background:#2f855a;}
+.btn-danger{background:#e53e3e;color:#fff;}
+.btn-danger:hover{background:#c53030;}
+.btn-warning{background:#dd6b20;color:#fff;}
+.btn-warning:hover{background:#c05621;}
+.btn-ghost{background:transparent;color:var(--text2);border:1.5px solid var(--border);}
+.btn-ghost:hover{background:var(--bg3);}
+.btn-icon{padding:8px;border-radius:var(--radius2);background:var(--bg3);color:var(--text2);border:none;cursor:pointer;font-size:18px;line-height:1;transition:all 0.2s;}
+.btn-icon:hover{background:var(--border);}
+.btn-sm{padding:6px 12px;font-size:13px;}
+.btn-xs{padding:4px 8px;font-size:12px;}
+.btn-full{width:100%;justify-content:center;}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--border);}
+.section{padding:16px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:5px;}
+.form-control{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius2);background:var(--input-bg);color:var(--text);font-size:15px;transition:border-color 0.2s;}
+.form-control:focus{outline:none;border-color:var(--accent);}
+select.form-control{cursor:pointer;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:600;}
+.badge-green{background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-border);}
+.badge-orange-light{background:var(--orange-light-bg);color:var(--orange-light-text);border:1px solid var(--orange-light-border);}
+.badge-orange-dark{background:var(--orange-dark-bg);color:var(--orange-dark-text);border:1px solid var(--orange-dark-border);}
+.badge-red-light{background:var(--red-light-bg);color:var(--red-light-text);border:1px solid var(--red-light-border);}
+.badge-moroso{background:var(--red-moroso-bg);color:var(--red-moroso-text);border:1px solid var(--red-moroso-border);}
+.badge-gray{background:var(--bg3);color:var(--text3);border:1px solid var(--border);}
+.badge-blue{background:var(--accent-light);color:var(--accent);border:1px solid var(--accent);}
+.progress-bar{background:var(--bg3);border-radius:8px;height:8px;overflow:hidden;}
+.progress-bar .fill{height:100%;border-radius:8px;background:var(--accent);transition:width 0.3s;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border-radius:var(--radius);padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow2);}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
+.divider{height:1px;background:var(--border);margin:12px 0;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.stat-card{background:var(--bg3);border-radius:var(--radius2);padding:12px;border:1px solid var(--border);}
+.stat-value{font-size:20px;font-weight:700;color:var(--accent);}
+.stat-label{font-size:12px;color:var(--text3);margin-top:2px;}
+.client-row{padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:12px;transition:background 0.15s;}
+.client-row:hover{background:var(--bg3);}
+.client-row.selected{background:var(--accent-light);}
+.client-avatar{width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;}
+.client-info{flex:1;min-width:0;}
+.client-name{font-weight:600;font-size:15px;color:var(--text);}
+.client-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+.fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:var(--accent);color:#fff;border:none;font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(49,130,206,0.4);display:flex;align-items:center;justify-content:center;z-index:90;transition:all 0.2s;}
+.fab:hover{transform:scale(1.1);background:var(--accent2);}
+.nav-pills{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;border-bottom:1px solid var(--border);background:var(--bg2);}
+.nav-pill{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;border:none;background:var(--bg3);color:var(--text2);transition:all 0.2s;}
+.nav-pill.active{background:var(--accent);color:#fff;}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;background:var(--bg3);color:var(--text3);}
+input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{opacity:1;}
+.info-box{background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--radius2);padding:10px 14px;font-size:13px;color:var(--accent2);margin:8px 0;}
+.highlight{background:var(--bg3);border-radius:var(--radius2);padding:8px 12px;font-size:14px;}
+.abono-row{padding:10px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3);}
+.empty-state .icon{font-size:48px;margin-bottom:12px;}
+.empty-state p{font-size:15px;}
+.reorder-btn{background:var(--bg3);border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:16px;color:var(--text3);}
+.search-bar{padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--border);}
+.search-input{width:100%;padding:10px 14px 10px 38px;border:1.5px solid var(--border);border-radius:var(--radius2);background:var(--input-bg);color:var(--text);font-size:15px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%23718096' viewBox='0 0 24 24'%3E%3Cpath d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' stroke='%23718096' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:10px center;}
+.search-input:focus{outline:none;border-color:var(--accent);}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a202c;color:#fff;padding:10px 20px;border-radius:30px;font-size:14px;font-weight:600;z-index:2000;opacity:0;transition:all 0.3s;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.closing-row{padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;}
+.closing-row:hover{background:var(--bg3);}
+.toggle-switch{position:relative;width:50px;height:26px;cursor:pointer;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:13px;transition:0.3s;}
+.toggle-slider:before{content:"";position:absolute;height:20px;width:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.3s;}
+input:checked+.toggle-slider{background:var(--accent);}
+input:checked+.toggle-slider:before{transform:translateX(24px);}
+.credit-detail-header{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:20px 16px;border-radius:var(--radius) var(--radius) 0 0;}
+.credit-detail-header .amount{font-size:32px;font-weight:800;}
+.tabs{display:flex;border-bottom:2px solid var(--border);background:var(--bg2);}
+.tab{flex:1;text-align:center;padding:11px 8px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+.nav-client-bar{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg2);border-top:1px solid var(--border);position:sticky;bottom:0;z-index:50;}
+.nav-client-bar span{flex:1;text-align:center;font-size:13px;color:var(--text3);}
+@media(max-width:380px){.form-row{grid-template-columns:1fr;}.stat-grid{grid-template-columns:1fr 1fr;}}
+.spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;margin:auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.route-card{padding:16px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:14px;transition:background 0.15s;}
+.route-card:hover{background:var(--bg3);}
+.route-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0;}
+.route-info{flex:1;}
+.route-name{font-size:16px;font-weight:700;color:var(--text);}
+.route-sub{font-size:12px;color:var(--text3);margin-top:3px;}
+.pct-badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--bg3);color:var(--accent);}
+</style>
+</head>
+<body>
+<div id="toast" class="toast"></div>
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.12.1/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.12.1/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.12.1/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.12.1/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.12.1/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.12.1/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.12.1/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.12.1/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.12.1/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.12.1/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+<!-- ========== LOGIN SCREEN ========== -->
+<div id="login-screen" style="
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:24px;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="text-align:center;">
+    <div style="font-size:3rem;margin-bottom:8px;">💰</div>
+    <h1 style="font-size:1.8rem;font-weight:800;color:var(--accent);margin:0;">Prestaya Pro</h1>
+    <p style="color:var(--text2);margin:4px 0 0;">Gestión de préstamos en la nube</p>
+  </div>
+  <img id="login-user-photo" src="" alt="" style="width:72px;height:72px;border-radius:50%;display:none;" />
+  <p id="login-user-name" style="color:var(--text2);font-size:0.95rem;"></p>
+  <button onclick="loginGoogle()" style="
+    display:flex;align-items:center;gap:12px;
+    background:#fff;color:#333;
+    border:none;border-radius:12px;
+    padding:14px 28px;font-size:1rem;font-weight:600;
+    cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.18);
+    transition:transform 0.1s;">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="22" height="22" alt="Google" />
+    Entrar con Google
+  </button>
+  <p style="color:var(--text2);font-size:0.78rem;text-align:center;max-width:280px;">
+    Tus datos se guardan de forma segura en la nube.<br/>Solo tú puedes verlos.
+  </p>
+</div>
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
+<!-- ========== VIEW: ROUTES ========== -->
+<div id="view-routes" class="view active">
+  <div class="topbar">
+    <span class="logo">💰 Prestaya Pro</span>
+    <button class="btn-icon" onclick="openSearch()" title="Buscar">🔍</button>
+    <button class="btn-icon" onclick="showView('view-closing')" title="Cierres">📊</button>
+    <button class="btn-icon" onclick="showView('view-settings')" title="Ajustes">⚙️</button>
+    <button class="btn-icon" onclick="logoutUser()" title="Cerrar sesión">🚪</button>
+  </div>
+  <div id="routes-list" class="card" style="margin:16px;"></div>
+  <button class="fab" onclick="openRouteModal()">+</button>
+</div>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+<!-- ========== VIEW: ROUTE DETAIL ========== -->
+<div id="view-route-detail" class="view">
+  <div class="topbar">
+    <button class="btn-icon" onclick="goBack()">←</button>
+    <span class="topbar-title" id="route-detail-title"></span>
+    <button class="btn-icon" onclick="openSearch()" title="Buscar">🔍</button>
+    <button class="btn-icon" onclick="showRouteOptions()" title="Opciones">⋮</button>
+  </div>
+  <div class="nav-pills" id="route-nav-pills">
+    <button class="nav-pill active" onclick="switchRouteTab('clients')">Clientes</button>
+    <button class="nav-pill" onclick="switchRouteTab('stats')">Estadísticas</button>
+    <button class="nav-pill" onclick="switchRouteTab('overdue')">Vencidos</button>
+  </div>
+  <div id="route-tab-clients">
+    <div class="search-bar"><input class="search-input" id="route-search" placeholder="Buscar cliente por nombre o cédula..." oninput="filterRouteClients()"></div>
+    <div class="card" style="margin:12px;" id="clients-list"></div>
+  </div>
+  <div id="route-tab-stats" style="display:none;">
+    <div class="section" id="route-stats-content"></div>
+  </div>
+  <div id="route-tab-overdue" style="display:none;">
+    <div class="section" id="route-overdue-content"></div>
+  </div>
+  <button class="fab" onclick="openAddClientModal()">+</button>
+</div>
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
+<!-- ========== VIEW: CLIENT DETAIL ========== -->
+<div id="view-client-detail" class="view">
+  <div class="topbar">
+    <button class="btn-icon" onclick="goBackToRoute()">←</button>
+    <span class="topbar-title" id="client-detail-name"></span>
+    <button class="btn-icon" onclick="openClientOptions()">⋮</button>
+  </div>
+  <div id="client-detail-content"></div>
+  <div class="nav-client-bar">
+    <button class="btn btn-ghost btn-sm" onclick="navigateClient(-1)">← Anterior</button>
+    <span id="client-nav-info"></span>
+    <button class="btn btn-ghost btn-sm" onclick="navigateClient(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- ========== VIEW: CLOSING ========== -->
+<div id="view-closing" class="view">
+  <div class="topbar">
+    <button class="btn-icon" onclick="goBack()">←</button>
+    <span class="topbar-title">📊 Cierres del Día</span>
+    <button class="btn-icon" onclick="exportClosingExcel()" title="Exportar Excel">📥</button>
+  </div>
+  <div id="closing-content" class="section"></div>
+</div>
+
+<!-- ========== VIEW: SEARCH ========== -->
+<div id="view-search" class="view">
+  <div class="topbar">
+    <button class="btn-icon" onclick="goBack()">←</button>
+    <span class="topbar-title">🔍 Buscar Cliente</span>
+  </div>
+  <div class="search-bar"><input class="search-input" id="global-search" placeholder="Buscar por nombre o cédula..." oninput="globalSearch()" autofocus></div>
+  <div id="search-results" class="section"></div>
+</div>
+
+<!-- ========== VIEW: SETTINGS ========== -->
+<div id="view-settings" class="view">
+  <div class="topbar">
+    <button class="btn-icon" onclick="goBack()">←</button>
+    <span class="topbar-title">⚙️ Ajustes</span>
+  </div>
+  <div class="section" id="settings-content"></div>
+</div>
+
+<!-- MODALS -->
+<div id="modal-overlay" class="modal-overlay" onclick="closeModalIfOutside(event)">
+  <div class="modal" id="modal-box">
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA LAYER
+// ============================================================
+const DB_KEY = 'prestaya_data';
+let db = { routes: [], cancelledClients: [], closings: [], settings: { theme: 'light' } };
+let currentRouteId = null;
+let currentClientId = null;
+let currentCreditId = null;
+let currentClientIndex = 0;
+let lastViewStack = [];
+let routeScrollPos = 0;
+let unlockedRoutes = {};
+
+function loadDB() {
+  return { routes: [], cancelledClients: [], closings: [], settings: { theme: 'light' } };
+}
+
+async function saveDB() {
+  try { localStorage.setItem(DB_KEY, JSON.stringify(db)); } catch(e) {}
+  if (window._fireUser) {
+    try {
+      const { getFirestore, doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+      const fdb = getFirestore(window._fireApp);
+      await setDoc(doc(fdb, 'prestaya_users', window._fireUser.uid), { data: JSON.stringify(db) });
+    } catch(e) { console.warn('Error guardando Firebase:', e); }
+  }
+}
+
+function normalizeDB() {
+  db.routes = Array.isArray(db.routes) ? db.routes : [];
+  db.cancelledClients = Array.isArray(db.cancelledClients) ? db.cancelledClients : [];
+  db.closings = Array.isArray(db.closings) ? db.closings : [];
+  db.settings = db.settings || { theme: 'light' };
+  db.routes.forEach((r, routeIndex) => {
+    r.clients = Array.isArray(r.clients) ? r.clients : [];
+    r.pin = String(r.pin || '').trim().slice(0, 10);
+    r.clients.forEach((c, clientIndex) => {
+      c.order = Number.isFinite(c.order) ? c.order : (clientIndex + 1);
+      c.credits = Array.isArray(c.credits) ? c.credits : [];
+      c.credits.forEach(cr => {
+        cr.payments = Array.isArray(cr.payments) ? cr.payments : [];
       });
-    </script>
-  </body>
+    });
+    if (!r.id) r.id = 'route_' + routeIndex;
+  });
+}
+normalizeDB();
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 6); }
+
+// ============================================================
+// UTILITIES
+// ============================================================
+function titleCase(str) {
+  if (!str) return str;
+  return str.replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+}
+
+// Currency: store in pesos (×1000), display formatted
+function parseCOP(val) {
+  const n = parseFloat(String(val).replace(/[^0-9.]/g,''));
+  if (isNaN(n)) return 0;
+  return Math.round(n * 1000);
+}
+
+function formatCOP(n) {
+  if (!n && n !== 0) return '$0';
+  return '$' + Math.round(n).toLocaleString('es-CO');
+}
+
+function fmtDate(d) {
+  if (!d) return '';
+  const dt = new Date(d + 'T00:00:00');
+  return `${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()}`;
+}
+
+function addDays(dateStr, days) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + parseInt(days));
+  return d.toISOString().split('T')[0];
+}
+
+function today() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+
+function diffDays(a, b) {
+  const da = new Date(a + 'T00:00:00'), db = new Date(b + 'T00:00:00');
+  return Math.round((db - da) / 86400000);
+}
+
+function showToast(msg, dur=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+function confirm2(msg) { return window.confirm(msg); }
+
+function sanitizeShortPassword(v) {
+  return String(v || '').trim().slice(0, 10);
+}
+
+function getFrequencyDays(freq) {
+  return { weekly: 7, biweekly: 15, monthly: 30 }[freq] || 0;
+}
+
+function isPaymentDueOnDate(credit, dateStr=today()) {
+  if (!credit || !credit.active || !credit.startDate) return false;
+  const interval = getFrequencyDays(credit.paymentFrequency);
+  if (!interval || !dateStr) return false;
+  if (dateStr < credit.startDate) return false;
+  if (credit.endDate && dateStr > credit.endDate) return false;
+  return diffDays(credit.startDate, dateStr) % interval === 0;
+}
+
+function hasPaymentOnDate(credit, dateStr=today()) {
+  if (!credit || !Array.isArray(credit.payments) || !dateStr) return false;
+  return credit.payments.some(p => p.date === dateStr && (parseFloat(p.amount) || 0) > 0);
+}
+
+function getPaidTodayBadge(credit) {
+  return hasPaymentOnDate(credit, today()) ? '<span class="badge badge-green">💵 Dio Hoy</span>' : '';
+}
+
+function getTodayBadge(credit) {
+  return isPaymentDueOnDate(credit, today()) ? '<span class="badge badge-blue">📅 HOY</span>' : '';
+}
+
+function ensureRouteAccess(route) {
+  if (!route) return false;
+  const pin = sanitizeShortPassword(route.pin);
+  if (!pin) return true;
+  if (unlockedRoutes[route.id] === pin) return true;
+  const entered = window.prompt(`🔐 La ruta "${route.name}" tiene contraseña corta. Escríbela para entrar:`, '');
+  if (entered === null) return false;
+  if (sanitizeShortPassword(entered) !== pin) {
+    showToast('⚠️ Contraseña incorrecta');
+    return false;
+  }
+  unlockedRoutes[route.id] = pin;
+  return true;
+}
+
+// ============================================================
+// VIEW MANAGEMENT
+// ============================================================
+function showView(id, push=true) {
+  if (push) lastViewStack.push(document.querySelector('.view.active')?.id || 'view-routes');
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goBack() {
+  const prev = lastViewStack.pop() || 'view-routes';
+  showView(prev, false);
+}
+
+function goBackToRoute() {
+  // Restore scroll
+  showView('view-route-detail', false);
+  setTimeout(() => window.scrollTo(0, routeScrollPos), 50);
+}
+
+// ============================================================
+// THEME
+// ============================================================
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  db.settings = db.settings || {};
+  db.settings.theme = t;
+  saveDB();
+}
+// Theme applied after login
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(html) {
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('modal-box').scrollTop = 0;
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+function closeModalIfOutside(e) { if (e.target.id === 'modal-overlay') closeModal(); }
+
+// ============================================================
+// ROUTES
+// ============================================================
+function renderRoutes() {
+  const el = document.getElementById('routes-list');
+  if (!db.routes.length) {
+    el.innerHTML = '<div class="empty-state"><div class="icon">🗺️</div><p>No hay rutas creadas.<br>Toca + para agregar una ruta.</p></div>';
+    return;
+  }
+  el.innerHTML = db.routes.map(r => {
+    const clients = r.clients || [];
+    const activeCredits = clients.filter(c => hasActiveCredit(c));
+    const totalSaldo = clients.reduce((sum, c) => sum + getClientBalance(c), 0);
+    const paidTodayCount = clients.filter(c => hasPaymentOnDate(getActiveCredit(c), today())).length;
+    return `<div class="route-card" onclick="openRoute('${r.id}')">
+      <div class="route-icon">📍</div>
+      <div class="route-info">
+        <div class="route-name">${r.name}${r.pin ? ' 🔐' : ''}</div>
+        <div class="route-sub">${clients.length} clientes · ${activeCredits.length} activos · Saldo: ${formatCOP(totalSaldo)}${r.pin ? ' · Protegida' : ''}</div>
+        ${paidTodayCount ? `<div style="margin-top:5px;"><span class="badge badge-green">💵 ${paidTodayCount} dio/dieron hoy</span></div>` : ''}
+      </div>
+      <span style="color:var(--text3);font-size:20px;">›</span>
+    </div>`;
+  }).join('');
+}
+
+function openRouteModal(id) {
+  const r = id ? db.routes.find(x=>x.id===id) : null;
+  openModal(`<div class="modal-title">${r?'Editar':'Nueva'} Ruta <button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div class="form-group"><label>Nombre de la Ruta</label>
+      <input class="form-control" id="m-route-name" value="${r?r.name:''}" placeholder="Ej: Barranquilla" maxlength="60"></div>
+    <div class="form-group"><label>Contraseña corta (opcional)</label>
+      <input class="form-control" id="m-route-pin" type="password" value="${r?r.pin||'':''}" placeholder="Ej: 1234" maxlength="10"></div>
+    <div style="font-size:12px;color:var(--text3);margin-top:-6px;margin-bottom:10px;">Si la dejas vacía, la ruta quedará sin bloqueo.</div>
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      ${r?`<button class="btn btn-danger btn-sm" onclick="deleteRoute('${r.id}')">🗑 Eliminar</button>`:''}
+      <button class="btn btn-primary btn-full" onclick="saveRoute('${r?.id||''}')">💾 Guardar</button>
+    </div>`);
+}
+
+function saveRoute(id) {
+  const name = document.getElementById('m-route-name').value.trim();
+  const pin = sanitizeShortPassword(document.getElementById('m-route-pin')?.value || '');
+  if (!name) { showToast('Escribe un nombre'); return; }
+  if (id) {
+    const r = db.routes.find(x=>x.id===id);
+    r.name = name;
+    r.pin = pin;
+    delete unlockedRoutes[r.id];
+  } else {
+    db.routes.push({ id: uid(), name, pin, clients: [] });
+  }
+  saveDB(); renderRoutes(); closeModal(); showToast('✅ Ruta guardada');
+}
+
+function deleteRoute(id) {
+  if (!confirm2('¿Eliminar esta ruta y todos sus clientes?')) return;
+  db.routes = db.routes.filter(r=>r.id!==id);
+  saveDB(); closeModal(); renderRoutes(); showToast('🗑 Ruta eliminada');
+}
+
+function openRoute(id) {
+  const r = db.routes.find(x=>x.id===id);
+  if (!ensureRouteAccess(r)) return;
+  currentRouteId = id;
+  routeScrollPos = 0;
+  document.getElementById('route-detail-title').textContent = '📍 ' + r.name;
+  switchRouteTab('clients');
+  showView('view-route-detail');
+}
+
+// ============================================================
+// CLIENTS LIST IN ROUTE
+// ============================================================
+function switchRouteTab(tab) {
+  document.querySelectorAll('#route-nav-pills .nav-pill').forEach((p,i)=>{
+    p.classList.toggle('active', ['clients','stats','overdue'][i]===tab);
+  });
+  document.getElementById('route-tab-clients').style.display = tab==='clients'?'':'none';
+  document.getElementById('route-tab-stats').style.display = tab==='stats'?'':'none';
+  document.getElementById('route-tab-overdue').style.display = tab==='overdue'?'':'none';
+  if (tab==='clients') renderClientsList();
+  if (tab==='stats') renderRouteStats();
+  if (tab==='overdue') renderOverdueList();
+}
+
+function getRoute() { return db.routes.find(r=>r.id===currentRouteId); }
+
+function hasActiveCredit(client) {
+  return (client.credits||[]).some(c=>c.active);
+}
+
+function getActiveCredit(client) {
+  return (client.credits||[]).find(c=>c.active) || (client.credits||[]).slice(-1)[0];
+}
+
+function getClientBalance(client) {
+  const cr = getActiveCredit(client);
+  if (!cr || !cr.active) return 0;
+  const paid = (cr.payments||[]).reduce((s,p)=>s+p.amount,0);
+  return Math.max(0, cr.amountToPay - paid);
+}
+
+function getDayStatus(credit) {
+  if (!credit || !credit.active) return null;
+  const td = today();
+  const end = credit.endDate;
+  const diff = diffDays(td, end); // positive = days left, negative = overdue
+  const overdue = -diff;
+  return { diff, overdue, isOverdue: diff < 0 };
+}
+
+function getStatusBadge(credit) {
+  if (!credit || !credit.active) return '<span class="badge badge-gray">Finalizado</span>';
+  const s = getDayStatus(credit);
+  if (!s) return '';
+  if (!s.isOverdue) return `<span class="badge badge-green">⏳ ${s.diff}d restantes</span>`;
+  const o = s.overdue;
+  if (o <= 15) return `<span class="badge badge-orange-light">⚠️ ${o}d vencido</span>`;
+  if (o <= 30) return `<span class="badge badge-orange-light">⚠️ ${o}d vencido</span>`;
+  if (o <= 60) return `<span class="badge badge-orange-dark">🔶 ${o}d vencido</span>`;
+  if (o <= 90) return `<span class="badge badge-red-light">🔴 ${o}d vencido</span>`;
+  return `<span class="badge badge-moroso">💀 MOROSO ${o}d</span>`;
+}
+
+function getRowClass(credit) {
+  if (!credit || !credit.active) return '';
+  const s = getDayStatus(credit);
+  if (!s || !s.isOverdue) return '';
+  const o = s.overdue;
+  if (o <= 15) return 'style="border-left:4px solid #f6ad55;"';
+  if (o <= 30) return 'style="border-left:4px solid #ed8936;"';
+  if (o <= 60) return 'style="border-left:4px solid #fc8181;"';
+  return 'style="border-left:4px solid #f56565;background:var(--red-moroso-bg);"';
+}
+
+function renderClientsList(filterStr='') {
+  const r = getRoute(); if (!r) return;
+  const el = document.getElementById('clients-list');
+  if (!filterStr && document.getElementById('route-search')) filterStr = document.getElementById('route-search').value.trim();
+  let clients = (r.clients||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  if (filterStr) {
+    const f = filterStr.toLowerCase();
+    clients = clients.filter(c=>c.name.toLowerCase().includes(f)||c.cedula.includes(f));
+  }
+  if (!clients.length) {
+    el.innerHTML = `<div class="empty-state"><div class="icon">👤</div><p>${filterStr?'Sin resultados':'No hay clientes.<br>Toca + para agregar.'}</p></div>`;
+    return;
+  }
+  el.innerHTML = clients.map((c,idx)=>{
+    const cr = getActiveCredit(c);
+    const bal = getClientBalance(c);
+    const sb = getStatusBadge(cr);
+    const paidTodayBadge = getPaidTodayBadge(cr);
+    const todayBadge = getTodayBadge(cr);
+    const rc = getRowClass(cr);
+    const initials = c.name.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+    return `<div class="client-row" id="crow-${c.id}" ${rc} onclick="openClientDetail('${c.id}')">
+      <div class="client-avatar">${initials}</div>
+      <div class="client-info">
+        <div class="client-name">${c.name}</div>
+        <div class="client-sub">${c.cedula} ${cr&&cr.active?'· Saldo: '+formatCOP(bal):''}</div>
+        <div style="margin-top:4px;display:flex;gap:6px;flex-wrap:wrap;">${paidTodayBadge}${todayBadge}${sb}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
+        <button class="reorder-btn" onclick="event.stopPropagation();moveClient('${c.id}',-1)">↑</button>
+        <button class="reorder-btn" onclick="event.stopPropagation();moveClient('${c.id}',1)">↓</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterRouteClients() {
+  renderClientsList(document.getElementById('route-search').value.trim());
+}
+
+function moveClient(clientId, dir) {
+  const r = getRoute();
+  const clients = r.clients.slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  const idx = clients.findIndex(c=>c.id===clientId);
+  const nidx = idx+dir;
+  if (nidx<0||nidx>=clients.length) return;
+  const tmp = clients[idx].order; clients[idx].order = clients[nidx].order; clients[nidx].order = tmp;
+  r.clients = clients;
+  saveDB(); renderClientsList(document.getElementById('route-search').value.trim());
+}
+
+function showRouteOptions() {
+  const r = getRoute();
+  openModal(`<div class="modal-title">Opciones Ruta <button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button class="btn btn-ghost btn-full" onclick="closeModal();openRouteModal('${r.id}')">✏️ Editar nombre de ruta</button>
+      <button class="btn btn-ghost btn-full" onclick="closeModal();exportRouteExcel()">📊 Exportar clientes a Excel</button>
+      <button class="btn btn-ghost btn-full" onclick="closeModal();document.getElementById('import-excel-input').click()">📤 Importar clientes desde Excel</button>
+      <button class="btn btn-ghost btn-full" onclick="closeModal();exportRouteSummaryExcel()">📈 Exportar resumen de ruta</button>
+    </div>
+    <input type="file" id="import-excel-input" accept=".xlsx,.xls" style="display:none" onchange="importClientsExcel(event)">`);
+}
+
+// ============================================================
+// ADD CLIENT
+// ============================================================
+function openAddClientModal(editId, insertAfterId='') {
+  const r = getRoute();
+  const client = editId ? r.clients.find(c=>c.id===editId) : null;
+  const clientsOrdered = (r.clients||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  const defaultPos = !client && insertAfterId ? insertAfterId : 'end';
+  const posOptions = `<option value="end" ${defaultPos==='end'?'selected':''}>${client?'---':'Al final'}</option>` +
+    clientsOrdered.map(c=>`<option value="${c.id}" ${!client&&defaultPos===c.id?'selected':''}>Después de: ${c.name}</option>`).join('');
+
+  openModal(`<div class="modal-title">${client?'Editar':'Nuevo'} Cliente <button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div class="form-group"><label>Cédula *</label>
+      <input class="form-control" id="m-cedula" value="${client?client.cedula:''}" placeholder="Número de cédula" type="text" inputmode="numeric"
+        oninput="autofillCancelled()"></div>
+    <div class="form-group"><label>Nombre completo *</label>
+      <input class="form-control" id="m-name" value="${client?client.name:''}" placeholder="Nombre Apellido"
+        oninput="this.value=titleCaseInput(this.value)"></div>
+    <div class="form-group"><label>Celular (opcional)</label>
+      <input class="form-control" id="m-cel" value="${client?client.cel||'':''}" placeholder="300 000 0000" type="tel"></div>
+    ${!client?`<div class="form-group"><label>Posición en lista</label>
+      <select class="form-control" id="m-pos">${posOptions}</select></div>
+      ${insertAfterId?`<div style="font-size:12px;color:var(--text3);margin-top:-6px;margin-bottom:10px;">Se ubicará automáticamente después del cliente actual.</div>`:''}`:''}
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      ${client?`<button class="btn btn-danger btn-sm" onclick="deleteClient('${client.id}')">🗑</button>`:''}
+      <button class="btn btn-primary btn-full" onclick="saveClient('${editId||''}')">💾 Guardar</button>
+    </div>`);
+}
+
+function titleCaseInput(v) {
+  return v.replace(/(?:^|\s)\S/g, c => c.toUpperCase());
+}
+
+function autofillCancelled() {
+  const cedula = document.getElementById('m-cedula').value.trim();
+  const cc = (db.cancelledClients||[]).find(x=>x.cedula===cedula);
+  if (cc) {
+    if (document.getElementById('m-name')) document.getElementById('m-name').value = cc.name;
+    if (document.getElementById('m-cel') && cc.cel) document.getElementById('m-cel').value = cc.cel;
+  }
+}
+
+function saveClient(editId) {
+  const cedula = document.getElementById('m-cedula').value.trim();
+  const name = document.getElementById('m-name').value.trim();
+  const cel = document.getElementById('m-cel').value.trim();
+  if (!cedula || !name) { showToast('⚠️ Cédula y nombre son requeridos'); return; }
+  const r = getRoute();
+  if (editId) {
+    const c = r.clients.find(x=>x.id===editId);
+    c.cedula = cedula; c.name = name; c.cel = cel;
+    saveDB(); closeModal(); renderClientsList(); showToast('✅ Cliente actualizado');
+  } else {
+    const pos = document.getElementById('m-pos')?.value || 'end';
+    const maxOrder = Math.max(0, ...(r.clients||[]).map(c=>c.order||0));
+    let newOrder = maxOrder + 1;
+    if (pos !== 'end') {
+      const ref = r.clients.find(c=>c.id===pos);
+      if (ref) {
+        newOrder = (ref.order||0) + 0.5;
+        // Normalize orders
+        r.clients.sort((a,b)=>(a.order||0)-(b.order||0));
+      }
+    }
+    r.clients.push({ id: uid(), cedula, name, cel, order: newOrder, credits: [] });
+    // Normalize
+    r.clients.sort((a,b)=>(a.order||0)-(b.order||0));
+    r.clients.forEach((c,i)=>c.order=i+1);
+    saveDB(); closeModal(); renderClientsList(); showToast('✅ Cliente agregado');
+  }
+}
+
+function deleteClient(id) {
+  if (!confirm2('¿Eliminar este cliente y todos sus créditos?')) return;
+  const r = getRoute();
+  const c = r.clients.find(x=>x.id===id);
+  // Save to cancelled memory
+  if (c) {
+    db.cancelledClients = db.cancelledClients||[];
+    const existing = db.cancelledClients.find(x=>x.cedula===c.cedula);
+    if (!existing) db.cancelledClients.push({ cedula: c.cedula, name: c.name, cel: c.cel||'' });
+  }
+  r.clients = r.clients.filter(x=>x.id!==id);
+  saveDB(); closeModal(); renderClientsList(); showToast('🗑 Cliente eliminado');
+}
+
+// ============================================================
+// CLIENT DETAIL
+// ============================================================
+function openClientDetail(clientId) {
+  routeScrollPos = window.scrollY;
+  const r = getRoute();
+  currentClientId = clientId;
+  const clients = (r.clients||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  currentClientIndex = clients.findIndex(c=>c.id===clientId);
+  renderClientDetail();
+  showView('view-client-detail');
+}
+
+function renderClientDetail() {
+  const r = getRoute();
+  const clients = (r.clients||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  const client = clients[currentClientIndex];
+  if (!client) return;
+  currentClientId = client.id;
+  document.getElementById('client-detail-name').textContent = client.name;
+  document.getElementById('client-nav-info').textContent = `${currentClientIndex+1} / ${clients.length}`;
+
+  const cr = getActiveCredit(client);
+  const content = document.getElementById('client-detail-content');
+
+  // Client info bar
+  let html = `<div style="background:var(--bg2);padding:12px 16px;border-bottom:1px solid var(--border);">
+    <div style="font-size:13px;color:var(--text3);">📋 Cédula: <b>${client.cedula}</b>${client.cel?` · 📱 ${client.cel}`:''}</div>
+  </div>`;
+
+  if (!cr) {
+    html += `<div class="empty-state"><div class="icon">💳</div><p>Sin crédito activo</p></div>
+      <div class="section"><button class="btn btn-primary btn-full" onclick="openCreditModal('${client.id}')">➕ Agregar Crédito</button></div>`;
+    content.innerHTML = html;
+    return;
+  }
+
+  const paid = (cr.payments||[]).reduce((s,p)=>s+p.amount,0);
+  const balance = Math.max(0, cr.amountToPay - paid);
+  const pct = cr.amountToPay>0 ? Math.min(100,Math.round(paid/cr.amountToPay*100)) : 0;
+  const sb = getStatusBadge(cr);
+  const s = getDayStatus(cr);
+
+  html += `<div class="credit-detail-header">
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+      <div>
+        <div style="font-size:12px;opacity:0.8;">Saldo pendiente</div>
+        <div class="amount">${formatCOP(balance)}</div>
+      </div>
+      <div style="text-align:right;">${sb}</div>
+    </div>
+    <div class="progress-bar"><div class="fill" style="width:${pct}%;background:rgba(255,255,255,0.8);"></div></div>
+    <div style="font-size:12px;opacity:0.75;margin-top:4px;">${pct}% pagado</div>
+  </div>`;
+
+  html += `<div class="tabs">
+    <div class="tab active" onclick="switchClientTab('info')">Info</div>
+    <div class="tab" onclick="switchClientTab('payments')">Abonos</div>
+    <div class="tab" onclick="switchClientTab('history')">Historial</div>
+  </div>`;
+
+  // TAB INFO
+  html += `<div id="ct-info" class="tab-content active section">
+    <div class="stat-grid" style="margin-bottom:12px;">
+      <div class="stat-card"><div class="stat-value">${formatCOP(cr.amountLent)}</div><div class="stat-label">Prestado</div></div>
+      <div class="stat-card"><div class="stat-value">${formatCOP(cr.amountToPay)}</div><div class="stat-label">Total a pagar</div></div>
+      <div class="stat-card"><div class="stat-value">${cr.interest}%</div><div class="stat-label">Interés total</div></div>
+      <div class="stat-card"><div class="stat-value">${cr.monthlyInterest}%</div><div class="stat-label">Interés mensual</div></div>
+      <div class="stat-card"><div class="stat-value">${formatCOP(paid)}</div><div class="stat-label">Total abonado</div></div>
+      <div class="stat-card"><div class="stat-value">${formatCOP(balance)}</div><div class="stat-label">Saldo</div></div>
+    </div>
+    <div class="highlight" style="margin-bottom:10px;">
+      📅 Inicio: <b>${fmtDate(cr.startDate)}</b> &nbsp;→&nbsp; Vence: <b>${fmtDate(cr.endDate)}</b><br>
+      🗓 Plazo: <b>${cr.termDays} días</b> &nbsp;·&nbsp; Pago: <b>${{weekly:'Semanal',biweekly:'Quincenal',monthly:'Mensual'}[cr.paymentFrequency]||cr.paymentFrequency}</b>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-success btn-full" onclick="openPaymentModal('${client.id}','${cr.id}')">💵 Registrar Abono</button>
+      <button class="btn btn-ghost btn-sm" onclick="openCreditModal('${client.id}','${cr.id}')">✏️ Editar</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteCreditConfirm('${client.id}','${cr.id}')">🗑</button>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-ghost btn-sm" onclick="openAddClientModal('${client.id}')">✏️ Editar datos del cliente</button>
+      <button class="btn btn-primary btn-sm" onclick="openAddClientModal('', '${client.id}')">➕ Nuevo cliente después</button>
+    </div>
+  </div>`;
+
+  // TAB PAYMENTS
+  const payments = (cr.payments||[]).slice().sort((a,b)=>b.date.localeCompare(a.date));
+  html += `<div id="ct-payments" class="tab-content">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+      <button class="btn btn-success btn-sm" onclick="openPaymentModal('${client.id}','${cr.id}')">➕ Nuevo Abono</button>
+    </div>`;
+  if (!payments.length) {
+    html += `<div class="empty-state"><div class="icon">💰</div><p>Sin abonos registrados</p></div>`;
+  } else {
+    html += payments.map(p=>`<div class="abono-row">
+      <div>
+        <div style="font-weight:600;">${formatCOP(p.amount)}</div>
+        <div style="font-size:12px;color:var(--text3);">📅 ${fmtDate(p.date)}</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-icon btn-xs" onclick="openPaymentModal('${client.id}','${cr.id}','${p.id}')">✏️</button>
+        <button class="btn-icon btn-xs" onclick="deletePayment('${client.id}','${cr.id}','${p.id}')">🗑</button>
+      </div>
+    </div>`).join('');
+  }
+  html += `</div>`;
+
+  // TAB HISTORY (all credits)
+  const allCredits = (client.credits||[]).slice().reverse();
+  html += `<div id="ct-history" class="tab-content section">
+    <div style="font-weight:700;margin-bottom:10px;">Historial de Créditos</div>`;
+  html += allCredits.map((cred,i)=>{
+    const p2 = (cred.payments||[]).reduce((s,p)=>s+p.amount,0);
+    const b2 = Math.max(0, cred.amountToPay-p2);
+    return `<div class="card" style="padding:12px;margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div><b>${formatCOP(cred.amountLent)}</b> → ${formatCOP(cred.amountToPay)}</div>
+        <span class="badge ${cred.active?'badge-green':'badge-gray'}">${cred.active?'Activo':'Cerrado'}</span>
+      </div>
+      <div style="font-size:12px;color:var(--text3);margin-top:4px;">
+        ${fmtDate(cred.startDate)} – ${fmtDate(cred.endDate)} · Saldo: ${formatCOP(b2)}
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty-state" style="padding:20px;"><p>Sin historial</p></div>';
+  html += `<div style="margin-top:12px;"><button class="btn btn-primary btn-full" onclick="openCreditModal('${client.id}')">➕ Nuevo Crédito</button></div></div>`;
+
+  content.innerHTML = html;
+}
+
+function switchClientTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['info','payments','history'][i]===tab));
+  document.querySelectorAll('.tab-content').forEach((t,i)=>t.classList.toggle('active',['ct-info','ct-payments','ct-history'][i]==='ct-'+tab));
+}
+
+function navigateClient(dir) {
+  const r = getRoute();
+  const clients = (r.clients||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  const nidx = currentClientIndex + dir;
+  if (nidx < 0 || nidx >= clients.length) { showToast(dir<0?'Primer cliente':'Último cliente'); return; }
+  currentClientIndex = nidx;
+  renderClientDetail();
+  window.scrollTo(0,0);
+}
+
+function openClientOptions() {
+  const r = getRoute();
+  const client = r.clients.find(c=>c.id===currentClientId);
+  openModal(`<div class="modal-title">Opciones <button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button class="btn btn-ghost btn-full" onclick="closeModal();openAddClientModal('${client.id}')">✏️ Editar datos cliente</button>
+      <button class="btn btn-primary btn-full" onclick="closeModal();openAddClientModal('', '${client.id}')">➕ Nuevo cliente después de este</button>
+      <button class="btn btn-danger btn-full" onclick="closeModal();deleteClient('${client.id}');goBackToRoute()">🗑 Eliminar cliente</button>
+    </div>`);
+}
+
+// ============================================================
+// CREDIT MODAL
+// ============================================================
+function openCreditModal(clientId, creditId) {
+  const r = getRoute();
+  const client = r.clients.find(c=>c.id===clientId);
+  const cr = creditId ? client.credits.find(x=>x.id===creditId) : null;
+  const td = today();
+  openModal(`<div class="modal-title">${cr?'Editar':'Nuevo'} Crédito <button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div class="info-box">💡 Ingresa los valores en miles (ej: 500 = $500.000)</div>
+    <div class="form-row">
+      <div class="form-group"><label>Prestado (miles) *</label>
+        <input class="form-control" id="m-lent" type="number" value="${cr?cr.amountLent/1000:''}" placeholder="500" inputmode="numeric" oninput="calcInterest()"></div>
+      <div class="form-group"><label>Va a pagar (miles) *</label>
+        <input class="form-control" id="m-topay" type="number" value="${cr?cr.amountToPay/1000:''}" placeholder="700" inputmode="numeric" oninput="calcInterest()"></div>
+    </div>
+    <div id="m-interest-display" class="info-box" style="display:none;"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Fecha inicio *</label>
+        <input class="form-control" id="m-start" type="date" value="${cr?cr.startDate:td}" onchange="calcEndDate()"></div>
+      <div class="form-group"><label>Plazo (días) *</label>
+        <input class="form-control" id="m-days" type="number" value="${cr?cr.termDays:30}" placeholder="30" inputmode="numeric" onchange="calcEndDate()"></div>
+    </div>
+    <div class="form-group"><label>Fecha fin (auto)</label>
+      <input class="form-control" id="m-end" type="date" value="${cr?cr.endDate:addDays(td,30)}" readonly style="background:var(--bg3);"></div>
+    <div class="form-group"><label>Frecuencia de pago</label>
+      <select class="form-control" id="m-freq">
+        <option value="weekly" ${cr?.paymentFrequency==='weekly'?'selected':''}>Semanal</option>
+        <option value="biweekly" ${cr?.paymentFrequency==='biweekly'||!cr?'selected':''}>Quincenal</option>
+        <option value="monthly" ${cr?.paymentFrequency==='monthly'?'selected':''}>Mensual</option>
+      </select></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary btn-full" onclick="saveCredit('${clientId}','${creditId||''}')">💾 Guardar</button>
+    </div>`);
+  calcInterest();
+}
+
+function calcInterest() {
+  const lent = parseFloat(document.getElementById('m-lent')?.value)||0;
+  const topay = parseFloat(document.getElementById('m-topay')?.value)||0;
+  const days = parseInt(document.getElementById('m-days')?.value)||30;
+  const el = document.getElementById('m-interest-display');
+  if (!el) return;
+  if (lent>0 && topay>0 && topay>=lent) {
+    const pct = ((topay-lent)/lent*100).toFixed(1);
+    const months = days/30;
+    const monthly = months>0?(pct/months).toFixed(1):'N/A';
+    el.style.display='block';
+    el.innerHTML=`📊 Interés total: <b>${pct}%</b> &nbsp;·&nbsp; Interés mensual: <b>${monthly}%</b> (${days} días)`;
+  } else { el.style.display='none'; }
+}
+
+function calcEndDate() {
+  const start = document.getElementById('m-start')?.value;
+  const days = document.getElementById('m-days')?.value;
+  if (start && days) {
+    document.getElementById('m-end').value = addDays(start, parseInt(days));
+  }
+  calcInterest();
+}
+
+function saveCredit(clientId, creditId) {
+  const lentK = parseFloat(document.getElementById('m-lent').value)||0;
+  const topayK = parseFloat(document.getElementById('m-topay').value)||0;
+  const start = document.getElementById('m-start').value;
+  const days = parseInt(document.getElementById('m-days').value)||30;
+  const end = document.getElementById('m-end').value;
+  const freq = document.getElementById('m-freq').value;
+  if (!lentK||!topayK||!start) { showToast('⚠️ Completa todos los campos'); return; }
+  if (topayK < lentK) { showToast('⚠️ El total a pagar debe ser mayor al prestado'); return; }
+  const amountLent = lentK*1000, amountToPay = topayK*1000;
+  const interest = parseFloat(((amountToPay-amountLent)/amountLent*100).toFixed(2));
+  const months = days/30;
+  const monthlyInterest = parseFloat((months>0?interest/months:interest).toFixed(2));
+
+  const r = getRoute();
+  const client = r.clients.find(c=>c.id===clientId);
+  if (!client.credits) client.credits = [];
+
+  if (creditId) {
+    const cr = client.credits.find(x=>x.id===creditId);
+    Object.assign(cr, { amountLent, amountToPay, interest, monthlyInterest, startDate:start, endDate:end, termDays:days, paymentFrequency:freq });
+  } else {
+    // Deactivate previous
+    client.credits.forEach(c=>c.active=false);
+    client.credits.push({ id:uid(), amountLent, amountToPay, interest, monthlyInterest, startDate:start, endDate:end, termDays:days, paymentFrequency:freq, active:true, payments:[] });
+  }
+  saveDB(); closeModal(); renderClientDetail(); showToast('✅ Crédito guardado');
+}
+
+function deleteCreditConfirm(clientId, creditId) {
+  if (!confirm2('¿Eliminar este crédito y todos sus abonos?')) return;
+  const r = getRoute();
+  const client = r.clients.find(c=>c.id===clientId);
+  client.credits = client.credits.filter(x=>x.id!==creditId);
+  saveDB(); renderClientDetail(); showToast('🗑 Crédito eliminado');
+}
+
+// ============================================================
+// PAYMENT MODAL
+// ============================================================
+function openPaymentModal(clientId, creditId, paymentId) {
+  const r = getRoute();
+  const client = r.clients.find(c=>c.id===clientId);
+  const cr = client.credits.find(x=>x.id===creditId);
+  const pmt = paymentId ? cr.payments.find(p=>p.id===paymentId) : null;
+  const balance = Math.max(0, cr.amountToPay - (cr.payments||[]).reduce((s,p)=>s+p.amount,0));
+
+  openModal(`<div class="modal-title">${pmt?'Editar':'Nuevo'} Abono <button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div class="info-box">💡 Ingresa el valor en miles (ej: 5 = $5.000)</div>
+    <div class="highlight" style="margin-bottom:12px;">Saldo actual: <b>${formatCOP(balance)}</b></div>
+    <div class="form-group"><label>Abono (miles) *</label>
+      <input class="form-control" id="m-pmt-amount" type="number" value="${pmt?pmt.amount/1000:''}" placeholder="50" inputmode="numeric"></div>
+    <div class="form-group"><label>Fecha *</label>
+      <input class="form-control" id="m-pmt-date" type="date" value="${pmt?pmt.date:today()}"></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-success btn-full" onclick="savePayment('${clientId}','${creditId}','${paymentId||''}')">💾 Guardar Abono</button>
+    </div>`);
+}
+
+function savePayment(clientId, creditId, paymentId) {
+  const amtK = parseFloat(document.getElementById('m-pmt-amount').value)||0;
+  const date = document.getElementById('m-pmt-date').value;
+  if (!amtK||!date) { showToast('⚠️ Completa todos los campos'); return; }
+  const amount = amtK*1000;
+  const r = getRoute();
+  const client = r.clients.find(c=>c.id===clientId);
+  const cr = client.credits.find(x=>x.id===creditId);
+  if (!cr.payments) cr.payments = [];
+  if (paymentId) {
+    const p = cr.payments.find(x=>x.id===paymentId);
+    p.amount = amount; p.date = date;
+  } else {
+    cr.payments.push({ id:uid(), amount, date });
+    // Check if fully paid
+    const totalPaid = cr.payments.reduce((s,p)=>s+p.amount,0);
+    if (totalPaid >= cr.amountToPay) {
+      cr.active = false;
+      // Save to cancelled memory
+      db.cancelledClients = db.cancelledClients||[];
+      const existing = db.cancelledClients.find(x=>x.cedula===client.cedula);
+      if (!existing) db.cancelledClients.push({ cedula:client.cedula, name:client.name, cel:client.cel||'' });
+      showToast('🎉 ¡Crédito pagado completamente!', 4000);
+    }
+  }
+  saveDB(); closeModal(); renderClientsList(document.getElementById('route-search')?.value.trim() || ''); renderRoutes(); renderClientDetail(); if (!paymentId) showToast('✅ Abono registrado');
+}
+
+function deletePayment(clientId, creditId, paymentId) {
+  if (!confirm2('¿Eliminar este abono?')) return;
+  const r = getRoute();
+  const client = r.clients.find(c=>c.id===clientId);
+  const cr = client.credits.find(x=>x.id===creditId);
+  cr.payments = cr.payments.filter(p=>p.id!==paymentId);
+  // Reactivate if was deactivated
+  if (!cr.active) cr.active = true;
+  saveDB(); renderClientsList(document.getElementById('route-search')?.value.trim() || ''); renderRoutes(); renderClientDetail(); showToast('🗑 Abono eliminado');
+}
+
+// ============================================================
+// ROUTE STATISTICS
+// ============================================================
+function renderRouteStats() {
+  const r = getRoute();
+  const clients = r.clients||[];
+  const el = document.getElementById('route-stats-content');
+
+  let totalClients = clients.length;
+  let activeClients = 0, cancelledCount = 0;
+  let totalLent = 0, totalWithInterest = 0, totalBalance = 0, totalPaid = 0;
+  let totalUtility = 0, cancelledUtility = 0;
+  let sumInterest = 0, sumMonthlyInterest = 0, interestCount = 0;
+
+  clients.forEach(c=>{
+    const cr = getActiveCredit(c);
+    if (cr && cr.active) {
+      activeClients++;
+      const paid = (cr.payments||[]).reduce((s,p)=>s+p.amount,0);
+      const bal = Math.max(0,cr.amountToPay-paid);
+      totalLent += cr.amountLent;
+      totalWithInterest += cr.amountToPay;
+      totalBalance += bal;
+      totalPaid += paid;
+      totalUtility += (cr.amountToPay - cr.amountLent);
+      sumInterest += cr.interest;
+      sumMonthlyInterest += cr.monthlyInterest;
+      interestCount++;
+    }
+    // Cancelled (all fully paid)
+    (c.credits||[]).filter(cr2=>!cr2.active).forEach(cr2=>{
+      const paid2 = (cr2.payments||[]).reduce((s,p)=>s+p.amount,0);
+      if (paid2 >= cr2.amountToPay) { cancelledCount++; cancelledUtility += (cr2.amountToPay-cr2.amountLent); }
+    });
+  });
+
+  const avgInterest = interestCount>0?(sumInterest/interestCount).toFixed(1):0;
+  const avgMonthly = interestCount>0?(sumMonthlyInterest/interestCount).toFixed(1):0;
+  const overdue30 = clients.filter(c=>{ const cr=getActiveCredit(c); if(!cr||!cr.active)return false; const s=getDayStatus(cr); return s&&s.isOverdue&&s.overdue>30; });
+
+  el.innerHTML = `
+    <div style="font-weight:700;font-size:16px;margin-bottom:12px;">📊 Resumen: ${r.name}</div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-value">${totalClients}</div><div class="stat-label">Total Clientes</div></div>
+      <div class="stat-card"><div class="stat-value">${activeClients}</div><div class="stat-label">Activos</div></div>
+      <div class="stat-card"><div class="stat-value">${cancelledCount}</div><div class="stat-label">Cancelados</div></div>
+      <div class="stat-card"><div class="stat-value">${overdue30.length}</div><div class="stat-label">Vencidos +30d</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-value" style="font-size:16px;">${formatCOP(totalLent)}</div><div class="stat-label">Capital prestado</div></div>
+      <div class="stat-card"><div class="stat-value" style="font-size:16px;">${formatCOP(totalWithInterest)}</div><div class="stat-label">Con intereses</div></div>
+      <div class="stat-card"><div class="stat-value" style="font-size:16px;">${formatCOP(totalBalance)}</div><div class="stat-label">Saldo total</div></div>
+      <div class="stat-card"><div class="stat-value" style="font-size:16px;">${formatCOP(totalPaid)}</div><div class="stat-label">Recaudado</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-value">${avgInterest}%</div><div class="stat-label">Interés promedio</div></div>
+      <div class="stat-card"><div class="stat-value">${avgMonthly}%</div><div class="stat-label">Interés mensual prom.</div></div>
+      <div class="stat-card"><div class="stat-value" style="font-size:16px;">${formatCOP(totalUtility)}</div><div class="stat-label">Utilidad activos</div></div>
+      <div class="stat-card"><div class="stat-value" style="font-size:16px;">${formatCOP(cancelledUtility)}</div><div class="stat-label">Utilidad cancelados</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="info-box">📦 Saldo vencidos +30d: <b>${formatCOP(overdue30.reduce((s,c)=>s+getClientBalance(c),0))}</b></div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-ghost btn-sm" onclick="exportRouteSummaryExcel()">📊 Exportar resumen</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportRouteExcel()">📋 Exportar clientes</button>
+    </div>`;
+}
+
+function renderOverdueList() {
+  const r = getRoute();
+  const el = document.getElementById('route-overdue-content');
+  const clients = (r.clients||[]).filter(c=>{ const cr=getActiveCredit(c); if(!cr||!cr.active)return false; const s=getDayStatus(cr); return s&&s.isOverdue&&s.overdue>30; });
+  clients.sort((a,b)=>{ const sa=getDayStatus(getActiveCredit(a)),sb=getDayStatus(getActiveCredit(b)); return sb.overdue-sa.overdue; });
+  if (!clients.length) { el.innerHTML='<div class="empty-state"><div class="icon">✅</div><p>No hay clientes vencidos +30 días</p></div>'; return; }
+  el.innerHTML = `<div style="font-weight:700;font-size:16px;margin-bottom:12px;">⚠️ Clientes Vencidos +30 días</div>` +
+    clients.map(c=>{
+      const cr = getActiveCredit(c);
+      const s = getDayStatus(cr);
+      const bal = getClientBalance(c);
+      const lastPmt = (cr.payments||[]).slice().sort((a,b)=>b.date.localeCompare(a.date))[0];
+      const sb = getStatusBadge(cr);
+      return `<div class="card" style="padding:12px;margin-bottom:8px;cursor:pointer;" onclick="openClientDetail('${c.id}')">
+        <div style="display:flex;justify-content:space-between;align-items:start;">
+          <div><div style="font-weight:700;">${c.name}</div>
+            <div style="font-size:12px;color:var(--text3);">Saldo: ${formatCOP(bal)}</div>
+            <div style="font-size:12px;color:var(--text3);">Último abono: ${lastPmt?fmtDate(lastPmt.date):'Sin abonos'}</div>
+          </div>
+          <div>${sb}</div>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+function openSearch() {
+  showView('view-search');
+  setTimeout(()=>document.getElementById('global-search').focus(),200);
+}
+
+function globalSearch() {
+  const q = document.getElementById('global-search').value.trim().toLowerCase();
+  const el = document.getElementById('search-results');
+  if (!q) { el.innerHTML=''; return; }
+  let results = [];
+  db.routes.forEach(r=>{
+    (r.clients||[]).forEach(c=>{
+      if (c.name.toLowerCase().includes(q)||c.cedula.includes(q)) {
+        results.push({ route:r, client:c });
+      }
+    });
+  });
+  if (!results.length) { el.innerHTML='<div class="empty-state"><p>Sin resultados</p></div>'; return; }
+  el.innerHTML = results.map(({route,client})=>{
+    const cr = getActiveCredit(client);
+    const bal = getClientBalance(client);
+    const sb = cr ? getStatusBadge(cr) : '';
+    const paidTodayBadge = cr ? getPaidTodayBadge(cr) : '';
+    return `<div class="client-row" onclick="goToClient('${route.id}','${client.id}')">
+      <div class="client-avatar">${client.name.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()}</div>
+      <div class="client-info">
+        <div class="client-name">${client.name}</div>
+        <div class="client-sub">${route.name} · ${client.cedula}${cr&&cr.active?' · Saldo: '+formatCOP(bal):''}</div>
+        <div style="margin-top:3px;display:flex;gap:6px;flex-wrap:wrap;">${paidTodayBadge}${sb}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function goToClient(routeId, clientId) {
+  const r = db.routes.find(x=>x.id===routeId);
+  if (!ensureRouteAccess(r)) return;
+  currentRouteId = routeId;
+  document.getElementById('route-detail-title').textContent = '📍 ' + r.name;
+  const clients = (r.clients||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  currentClientIndex = clients.findIndex(c=>c.id===clientId);
+  currentClientId = clientId;
+  renderClientDetail();
+  lastViewStack = ['view-search'];
+  showView('view-client-detail');
+}
+
+// ============================================================
+// CLOSINGS
+// ============================================================
+function renderClosingView() {
+  const el = document.getElementById('closing-content');
+  const routes = db.routes;
+
+  let html = `<div style="font-weight:700;font-size:16px;margin-bottom:14px;">📊 Cierre del Día</div>
+    <div class="form-group"><label>Seleccionar Ruta</label>
+      <select class="form-control" id="closing-route-sel" onchange="updateClosingPreview()">
+        ${routes.map(r=>`<option value="${r.id}">${r.name}</option>`).join('')}
+      </select></div>
+    <div class="form-group"><label>Fecha del cierre</label>
+      <input class="form-control" id="closing-date" type="date" value="${today()}" onchange="updateClosingPreview()"></div>
+    <div id="closing-preview"></div>
+    <div class="divider"></div>
+    <div style="font-weight:700;font-size:15px;margin-bottom:10px;">Datos adicionales:</div>
+    <div class="form-row">
+      <div class="form-group"><label>Gastos del día (miles)</label>
+        <input class="form-control" id="cl-gastos" type="number" placeholder="0" inputmode="numeric" oninput="calcClosing()"></div>
+      <div class="form-group"><label>Base ingresada (miles)</label>
+        <input class="form-control" id="cl-base" type="number" placeholder="0" inputmode="numeric" oninput="calcClosing()"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Descuentos/salidas (miles)</label>
+        <input class="form-control" id="cl-descuento" type="number" placeholder="0" inputmode="numeric" oninput="calcClosing()"></div>
+      <div class="form-group"><label>Efectivo real (miles)</label>
+        <input class="form-control" id="cl-efectivo" type="number" placeholder="0" inputmode="numeric" oninput="calcClosing()"></div>
+    </div>
+    <div id="cl-result" class="card" style="padding:14px;margin:4px 0;"></div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+      <button class="btn btn-primary btn-full" onclick="saveClosing()">💾 Guardar Cierre</button>
+    </div>
+    <div class="divider"></div>
+    <div style="font-weight:700;font-size:15px;margin-bottom:10px;">📜 Historial de Cierres</div>
+    <div id="closings-history"></div>`;
+
+  el.innerHTML = html;
+  updateClosingPreview();
+  renderClosingsHistory();
+}
+
+function getClosingData(routeId, dateStr) {
+  const r = db.routes.find(x=>x.id===routeId);
+  if (!r) return { payments:[], loans:[], paymentTotal:0, loanTotal:0, finishedCount:0, finishedCards:[] };
+  let payments = [], loans = [], finishedCount = 0, finishedCards = [];
+  (r.clients||[]).forEach(c=>{
+    (c.credits||[]).forEach(cr=>{
+      (cr.payments||[]).filter(p=>p.date===dateStr).forEach(p=>{
+        payments.push({ client:c.name, amount:p.amount });
+      });
+      if (cr.startDate===dateStr) loans.push({ client:c.name, amount:cr.amountLent });
+      // Finished that day = last payment on that date and fully paid
+      const totalPd = (cr.payments||[]).reduce((s,p2)=>s+p2.amount,0);
+      const lastP = (cr.payments||[]).filter(p=>p.date===dateStr);
+      if (lastP.length && totalPd>=cr.amountToPay) {
+        finishedCount++;
+        const totalLastPayment = lastP.reduce((s,p3)=>s+p3.amount,0);
+        finishedCards.push({ client:c.name, total:cr.amountToPay, lastPayment:totalLastPayment });
+      }
+    });
+  });
+  return {
+    payments, loans, finishedCards,
+    paymentTotal: payments.reduce((s,x)=>s+x.amount,0),
+    loanTotal: loans.reduce((s,x)=>s+x.amount,0),
+    finishedCount
+  };
+}
+
+function updateClosingPreview() {
+  const routeId = document.getElementById('closing-route-sel')?.value;
+  const dateStr = document.getElementById('closing-date')?.value;
+  if (!routeId||!dateStr) return;
+  const data = getClosingData(routeId, dateStr);
+  const el = document.getElementById('closing-preview');
+  el.innerHTML = `<div class="card" style="padding:12px;margin:8px 0;">
+    <div style="display:flex;justify-content:space-between;"><span>💵 Abonos del día:</span><b>${formatCOP(data.paymentTotal)}</b></div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px;"><span>📤 Préstamos del día:</span><b>${formatCOP(data.loanTotal)}</b></div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px;"><span>✅ Tarjetas canceladas:</span><b>${data.finishedCount}</b></div>
+    <div style="margin-top:8px;">
+      <button class="btn btn-ghost btn-sm" onclick="showClosingDetails('${routeId}','${dateStr}')">🔍 Ver detalles</button>
+    </div>
+  </div>`;
+  calcClosing();
+}
+
+function calcClosing() {
+  const routeId = document.getElementById('closing-route-sel')?.value;
+  const dateStr = document.getElementById('closing-date')?.value;
+  if (!routeId||!dateStr) return;
+  const data = getClosingData(routeId, dateStr);
+  const gastos = (parseFloat(document.getElementById('cl-gastos')?.value)||0)*1000;
+  const base = (parseFloat(document.getElementById('cl-base')?.value)||0)*1000;
+  const descuento = (parseFloat(document.getElementById('cl-descuento')?.value)||0)*1000;
+  const efectivo = (parseFloat(document.getElementById('cl-efectivo')?.value)||0)*1000;
+
+  const calculado = data.paymentTotal - data.loanTotal - gastos + base - descuento;
+  const diferencia = efectivo - calculado;
+
+  const el = document.getElementById('cl-result');
+  el.innerHTML = `<div style="font-weight:700;margin-bottom:8px;">📊 Resultado del Cierre</div>
+    <div style="display:flex;justify-content:space-between;">Abonos: <b>${formatCOP(data.paymentTotal)}</b></div>
+    <div style="display:flex;justify-content:space-between;">− Préstamos: <b style="color:var(--danger)">-${formatCOP(data.loanTotal)}</b></div>
+    <div style="display:flex;justify-content:space-between;">− Gastos: <b style="color:var(--danger)">-${formatCOP(gastos)}</b></div>
+    <div style="display:flex;justify-content:space-between;">+ Base: <b style="color:var(--success)">+${formatCOP(base)}</b></div>
+    <div style="display:flex;justify-content:space-between;">− Descuentos: <b style="color:var(--danger)">-${formatCOP(descuento)}</b></div>
+    <div class="divider"></div>
+    <div style="display:flex;justify-content:space-between;font-size:16px;"><b>Calculado:</b><b>${formatCOP(calculado)}</b></div>
+    <div style="display:flex;justify-content:space-between;font-size:16px;"><b>Efectivo real:</b><b>${formatCOP(efectivo)}</b></div>
+    <div style="display:flex;justify-content:space-between;font-size:16px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);">
+      <b>Diferencia:</b>
+      <b style="color:${diferencia===0?'var(--success)':diferencia>0?'var(--success)':'var(--danger)'}">${diferencia>=0?'+':''}${formatCOP(diferencia)}</b>
+    </div>`;
+}
+
+function saveClosing() {
+  const routeId = document.getElementById('closing-route-sel')?.value;
+  const dateStr = document.getElementById('closing-date')?.value;
+  if (!routeId||!dateStr) return;
+  const data = getClosingData(routeId, dateStr);
+  const gastos = (parseFloat(document.getElementById('cl-gastos')?.value)||0)*1000;
+  const base = (parseFloat(document.getElementById('cl-base')?.value)||0)*1000;
+  const descuento = (parseFloat(document.getElementById('cl-descuento')?.value)||0)*1000;
+  const efectivo = (parseFloat(document.getElementById('cl-efectivo')?.value)||0)*1000;
+  const calculado = data.paymentTotal - data.loanTotal - gastos + base - descuento;
+  const diferencia = efectivo - calculado;
+
+  db.closings = db.closings||[];
+  // Check if exists for same route+date, if so update
+  const existIdx = db.closings.findIndex(c=>c.routeId===routeId&&c.date===dateStr);
+  const closingObj = { id:uid(), routeId, date:dateStr,
+    paymentTotal:data.paymentTotal, loanTotal:data.loanTotal,
+    gastos, base, descuento, efectivo, calculado, diferencia,
+    finishedCount:data.finishedCount, details:data.payments, finishedDetails:data.finishedCards };
+  if (existIdx>=0) db.closings[existIdx] = { ...closingObj, id:db.closings[existIdx].id };
+  else db.closings.push(closingObj);
+
+  saveDB(); renderClosingsHistory(); showToast('✅ Cierre guardado');
+}
+
+function renderClosingsHistory() {
+  const el = document.getElementById('closings-history');
+  if (!el) return;
+  const closings = (db.closings||[]).slice().sort((a,b)=>b.date.localeCompare(a.date));
+  if (!closings.length) { el.innerHTML='<div class="empty-state" style="padding:20px;"><p>Sin cierres guardados</p></div>'; return; }
+  el.innerHTML = closings.map(c=>{
+    const r = db.routes.find(x=>x.id===c.routeId);
+    return `<div class="closing-row" onclick="showClosingDetail2('${c.id}')">
+      <div style="display:flex;justify-content:space-between;align-items:start;">
+        <div>
+          <div style="font-weight:700;">${fmtDate(c.date)} · ${r?r.name:'?'}</div>
+          <div style="font-size:12px;color:var(--text3);">Abonos: ${formatCOP(c.paymentTotal)} · Préstamos: ${formatCOP(c.loanTotal)}</div>
+        </div>
+        <span style="color:${c.diferencia===0?'var(--success)':c.diferencia>0?'var(--success)':'var(--danger)'}">
+          ${c.diferencia>=0?'+':''}${formatCOP(c.diferencia)}
+        </span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showClosingDetails(routeId, dateStr) {
+  const data = getClosingData(routeId, dateStr);
+  let html = `<div class="modal-title">🔍 Detalles ${fmtDate(dateStr)} <button class="btn-icon" onclick="closeModal()">✕</button></div>`;
+  html += `<div style="font-weight:700;margin-bottom:8px;">💵 Abonos (${data.payments.length})</div>`;
+  if (!data.payments.length) html += '<p style="color:var(--text3);font-size:13px;">Sin abonos</p>';
+  else html += data.payments.map(p=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);"><span>${p.client}</span><b>${formatCOP(p.amount)}</b></div>`).join('');
+  html += `<div style="font-weight:700;margin:12px 0 8px;">📤 Préstamos (${data.loans.length})</div>`;
+  if (!data.loans.length) html += '<p style="color:var(--text3);font-size:13px;">Sin préstamos</p>';
+  else html += data.loans.map(l=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);"><span>${l.client}</span><b>${formatCOP(l.amount)}</b></div>`).join('');
+  html += `<div style="font-weight:700;margin:12px 0 8px;">✅ Tarjetas canceladas (${data.finishedCards.length})</div>`;
+  if (!data.finishedCards.length) html += '<p style="color:var(--text3);font-size:13px;">Sin tarjetas canceladas</p>';
+  else html += data.finishedCards.map(f=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);"><span>${f.client}<br><small style="color:var(--text3);">Último abono: ${formatCOP(f.lastPayment)}</small></span><b>${formatCOP(f.total)}</b></div>`).join('');
+  openModal(html);
+}
+
+function showClosingDetail2(closingId) {
+  const c = (db.closings||[]).find(x=>x.id===closingId);
+  if (!c) return;
+  const r = db.routes.find(x=>x.id===c.routeId);
+  let html = `<div class="modal-title">📊 Cierre ${fmtDate(c.date)} <button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div style="font-size:14px;color:var(--text3);margin-bottom:10px;">Ruta: ${r?r.name:'?'}</div>
+    <div style="display:flex;flex-direction:column;gap:5px;font-size:14px;">
+      <div style="display:flex;justify-content:space-between;"><span>Abonos:</span><b>${formatCOP(c.paymentTotal)}</b></div>
+      <div style="display:flex;justify-content:space-between;"><span>Préstamos:</span><b>${formatCOP(c.loanTotal)}</b></div>
+      <div style="display:flex;justify-content:space-between;"><span>Gastos:</span><b>${formatCOP(c.gastos)}</b></div>
+      <div style="display:flex;justify-content:space-between;"><span>Base:</span><b>${formatCOP(c.base)}</b></div>
+      <div style="display:flex;justify-content:space-between;"><span>Descuentos:</span><b>${formatCOP(c.descuento)}</b></div>
+      <div style="display:flex;justify-content:space-between;"><span>Tarjetas canceladas:</span><b>${c.finishedCount||0}</b></div>
+      <div style="display:flex;justify-content:space-between;"><span>Calculado:</span><b>${formatCOP(c.calculado)}</b></div>
+      <div style="display:flex;justify-content:space-between;"><span>Efectivo real:</span><b>${formatCOP(c.efectivo)}</b></div>
+      <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700;padding-top:6px;border-top:1px solid var(--border);">
+        <span>Diferencia:</span><b style="color:${c.diferencia>=0?'var(--success)':'var(--danger)'}">${c.diferencia>=0?'+':''}${formatCOP(c.diferencia)}</b>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal();openEditClosingModal('${c.id}')">✏️ Editar</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal();showClosingDetailsById('${c.id}')">🔍 Ver detalles</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteClosing('${c.id}')">🗑 Eliminar</button>
+    </div>`;
+  openModal(html);
+}
+
+function showClosingDetailsById(closingId) {
+  const c = (db.closings||[]).find(x=>x.id===closingId);
+  if (!c) return;
+  let html = `<div class="modal-title">🔍 Detalles <button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div style="font-weight:700;margin-bottom:8px;">💵 Abonos</div>`;
+  if (!c.details||!c.details.length) html += '<p style="color:var(--text3);font-size:13px;">Sin abonos registrados ese día</p>';
+  else html += c.details.map(p=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);"><span>${p.client}</span><b>${formatCOP(p.amount)}</b></div>`).join('');
+  html += `<div style="font-weight:700;margin:12px 0 8px;">✅ Tarjetas canceladas</div>`;
+  if (!c.finishedDetails||!c.finishedDetails.length) html += '<p style="color:var(--text3);font-size:13px;">Sin tarjetas canceladas registradas ese día</p>';
+  else html += c.finishedDetails.map(f=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);"><span>${f.client}<br><small style="color:var(--text3);">Último abono: ${formatCOP(f.lastPayment)}</small></span><b>${formatCOP(f.total)}</b></div>`).join('');
+  openModal(html);
+}
+
+function openEditClosingModal(closingId) {
+  const c = (db.closings||[]).find(x=>x.id===closingId);
+  if (!c) return;
+  openModal(`<div class="modal-title">✏️ Editar Cierre <button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div class="form-row">
+      <div class="form-group"><label>Abonos (miles)</label><input class="form-control" id="ec-pmt" type="number" value="${c.paymentTotal/1000}" inputmode="numeric"></div>
+      <div class="form-group"><label>Préstamos (miles)</label><input class="form-control" id="ec-loan" type="number" value="${c.loanTotal/1000}" inputmode="numeric"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Gastos (miles)</label><input class="form-control" id="ec-gastos" type="number" value="${c.gastos/1000}" inputmode="numeric"></div>
+      <div class="form-group"><label>Base (miles)</label><input class="form-control" id="ec-base" type="number" value="${c.base/1000}" inputmode="numeric"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Descuentos (miles)</label><input class="form-control" id="ec-desc" type="number" value="${c.descuento/1000}" inputmode="numeric"></div>
+      <div class="form-group"><label>Efectivo (miles)</label><input class="form-control" id="ec-ef" type="number" value="${c.efectivo/1000}" inputmode="numeric"></div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="updateClosing('${closingId}')">💾 Actualizar</button>`);
+}
+
+function updateClosing(closingId) {
+  const c = (db.closings||[]).find(x=>x.id===closingId);
+  if (!c) return;
+  c.paymentTotal = (parseFloat(document.getElementById('ec-pmt').value)||0)*1000;
+  c.loanTotal = (parseFloat(document.getElementById('ec-loan').value)||0)*1000;
+  c.gastos = (parseFloat(document.getElementById('ec-gastos').value)||0)*1000;
+  c.base = (parseFloat(document.getElementById('ec-base').value)||0)*1000;
+  c.descuento = (parseFloat(document.getElementById('ec-desc').value)||0)*1000;
+  c.efectivo = (parseFloat(document.getElementById('ec-ef').value)||0)*1000;
+  c.calculado = c.paymentTotal - c.loanTotal - c.gastos + c.base - c.descuento;
+  c.diferencia = c.efectivo - c.calculado;
+  saveDB(); closeModal(); renderClosingsHistory(); showToast('✅ Cierre actualizado');
+}
+
+function deleteClosing(id) {
+  if (!confirm2('¿Eliminar este cierre?')) return;
+  db.closings = db.closings.filter(c=>c.id!==id);
+  saveDB(); closeModal(); renderClosingsHistory(); showToast('🗑 Cierre eliminado');
+}
+
+// ============================================================
+// EXCEL EXPORT
+// ============================================================
+function exportRouteExcel() {
+  const r = getRoute();
+  if (!r) return;
+  const clients = (r.clients||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  const rows = [['Nombre','Cédula','Celular','Prestado','Con Intereses','Interés %','Saldo Actual','Fecha Inicio','Fecha Vencimiento','Días Restantes/Vencido','Estado']];
+  clients.forEach(c=>{
+    const cr = getActiveCredit(c);
+    if (!cr) { rows.push([c.name,c.cedula,c.cel||'',0,0,0,0,'','','','Sin crédito']); return; }
+    const paid = (cr.payments||[]).reduce((s,p)=>s+p.amount,0);
+    const bal = Math.max(0,cr.amountToPay-paid);
+    const s = getDayStatus(cr);
+    const estado = !cr.active?'Finalizado':(!s?'':s.isOverdue?`Vencido ${s.overdue}d`:`${s.diff}d restantes`);
+    rows.push([c.name,c.cedula,c.cel||'',cr.amountLent,cr.amountToPay,cr.interest+'%',bal,fmtDate(cr.startDate),fmtDate(cr.endDate),s?(s.isOverdue?-s.overdue:s.diff):0,estado]);
+  });
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb, ws, r.name.substring(0,31));
+  XLSX.writeFile(wb, `Clientes_${r.name}_${today()}.xlsx`);
+  showToast('✅ Excel exportado');
+}
+
+function exportRouteSummaryExcel() {
+  const r = getRoute();
+  const clients = r.clients||[];
+  // Build same summary data
+  let rows = [['Ruta','Total Clientes','Activos','Cancelados','Capital Prestado','Con Intereses','Saldo Total','Interés Promedio %','Interés Mensual %','Utilidad Activos','Utilidad Cancelados','Vencidos +30d','Saldo Vencidos +30d']];
+  let activeClients=0,cancelledCount=0,totalLent=0,totalWithInterest=0,totalBalance=0,totalUtility=0,cancelledUtility=0,sumI=0,sumMI=0,iCount=0;
+  clients.forEach(c=>{
+    const cr=getActiveCredit(c);
+    if(cr&&cr.active){activeClients++;const paid=(cr.payments||[]).reduce((s,p)=>s+p.amount,0);totalLent+=cr.amountLent;totalWithInterest+=cr.amountToPay;totalBalance+=Math.max(0,cr.amountToPay-paid);totalUtility+=(cr.amountToPay-cr.amountLent);sumI+=cr.interest;sumMI+=cr.monthlyInterest;iCount++;}
+    (c.credits||[]).filter(cr2=>!cr2.active).forEach(cr2=>{const p2=(cr2.payments||[]).reduce((s,p)=>s+p.amount,0);if(p2>=cr2.amountToPay){cancelledCount++;cancelledUtility+=(cr2.amountToPay-cr2.amountLent);}});
+  });
+  const overdue30=clients.filter(c=>{const cr=getActiveCredit(c);if(!cr||!cr.active)return false;const s=getDayStatus(cr);return s&&s.isOverdue&&s.overdue>30;});
+  rows.push([r.name,clients.length,activeClients,cancelledCount,totalLent,totalWithInterest,totalBalance,iCount>0?(sumI/iCount).toFixed(1):0,iCount>0?(sumMI/iCount).toFixed(1):0,totalUtility,cancelledUtility,overdue30.length,overdue30.reduce((s,c)=>s+getClientBalance(c),0)]);
+
+  // Load existing if any
+  let wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb, ws, 'Resumen');
+  XLSX.writeFile(wb, `Resumen_${r.name}_${today()}.xlsx`);
+  showToast('✅ Resumen exportado');
+}
+
+function exportClosingExcel() {
+  const closings = (db.closings||[]).slice().sort((a,b)=>a.date.localeCompare(b.date));
+  const wb = XLSX.utils.book_new();
+  // Group by route
+  const byRoute = {};
+  closings.forEach(c=>{
+    if(!byRoute[c.routeId]) byRoute[c.routeId]=[];
+    byRoute[c.routeId].push(c);
+  });
+  db.routes.forEach(r=>{
+    const rClosings = byRoute[r.id]||[];
+    const header = ['Fecha','Abonos','Préstamos','Gastos','Base','Descuentos','Calculado','Efectivo Real','Diferencia','Clientes Terminaron'];
+    const rows = [header, ...rClosings.map(c=>[fmtDate(c.date),c.paymentTotal,c.loanTotal,c.gastos,c.base,c.descuento,c.calculado,c.efectivo,c.diferencia,c.finishedCount||0])];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, r.name.substring(0,31));
+  });
+  if (!Object.keys(byRoute).length) { showToast('⚠️ Sin cierres para exportar'); return; }
+  XLSX.writeFile(wb, `Cierres_Prestaya_${today()}.xlsx`);
+  showToast('✅ Excel de cierres exportado');
+}
+
+// ============================================================
+// IMPORT FROM EXCEL
+// ============================================================
+function importClientsExcel(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    try {
+      const wb = XLSX.read(e.target.result, {type:'binary'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1});
+      const r = getRoute();
+      let added=0;
+      // Expected columns: Nombre, Cédula, Celular, Prestado, Con Intereses, (optional rest)
+      rows.slice(1).forEach(row=>{
+        if (!row[0]&&!row[1]) return;
+        const name = titleCase(String(row[0]||'').trim());
+        const cedula = String(row[1]||'').trim();
+        const cel = String(row[2]||'').trim();
+        const lent = parseFloat(row[3])||0;
+        const topay = parseFloat(row[4])||0;
+        if (!name||!cedula) return;
+        const existing = r.clients.find(c=>c.cedula===cedula);
+        if (existing) return;
+        const maxOrder = Math.max(0,...(r.clients||[]).map(c=>c.order||0));
+        const credits = [];
+        if (lent>0&&topay>0) {
+          const interest = parseFloat(((topay-lent)/lent*100).toFixed(2));
+          credits.push({ id:uid(), amountLent:lent, amountToPay:topay, interest, monthlyInterest:interest, startDate:today(), endDate:addDays(today(),30), termDays:30, paymentFrequency:'biweekly', active:true, payments:[] });
+        }
+        r.clients.push({ id:uid(), cedula, name, cel, order:maxOrder+1, credits });
+        added++;
+      });
+      saveDB(); renderClientsList(); closeModal();
+      showToast(`✅ ${added} clientes importados`);
+    } catch(err) { showToast('⚠️ Error leyendo Excel: '+err.message); }
+  };
+  reader.readAsBinaryString(file);
+  evt.target.value='';
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+function renderSettings() {
+  const el = document.getElementById('settings-content');
+  const isDark = (db.settings?.theme||'light')==='dark';
+  el.innerHTML = `<div style="font-weight:700;font-size:16px;margin-bottom:16px;">⚙️ Configuración</div>
+    <div class="card" style="padding:14px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-weight:600;">Tema oscuro</div><div style="font-size:12px;color:var(--text3);">Cambiar apariencia</div></div>
+        <label class="toggle-switch"><input type="checkbox" ${isDark?'checked':''} onchange="applyTheme(this.checked?'dark':'light')"><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+    <div class="card" style="padding:14px;margin-bottom:12px;">
+      <div style="font-weight:600;margin-bottom:10px;">📂 Datos</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-ghost btn-full" onclick="exportJSON()">💾 Exportar datos (JSON)</button>
+        <button class="btn btn-ghost btn-full" onclick="document.getElementById('import-json-input').click()">📤 Importar datos (JSON)</button>
+        <input type="file" id="import-json-input" accept=".json" style="display:none" onchange="importJSON(event)">
+        <button class="btn btn-danger btn-full" onclick="clearAllData()">🗑 Borrar todos los datos</button>
+      </div>
+    </div>
+    <div class="card" style="padding:14px;margin-bottom:12px;">
+      <div style="font-weight:600;margin-bottom:6px;">ℹ️ Prestaya v2</div>
+      <div style="font-size:13px;color:var(--text3);">App de gestión de préstamos. Funciona offline. Los datos se guardan en este dispositivo.</div>
+    </div>`;
+}
+
+function exportJSON() {
+  const dataStr = JSON.stringify(db, null, 2);
+  const blob = new Blob([dataStr], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=`prestaya_backup_${today()}.json`; a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ Datos exportados');
+}
+
+function importJSON(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.routes) throw new Error('Formato inválido');
+      if (!confirm2('¿Reemplazar todos los datos con este archivo? Se perderán los datos actuales.')) return;
+      db = data;
+      saveDB(); renderRoutes(); renderSettings();
+      showToast('✅ Datos importados correctamente');
+    } catch(err) { showToast('⚠️ Error: '+err.message); }
+  };
+  reader.readAsText(file);
+  evt.target.value='';
+}
+
+function clearAllData() {
+  if (!confirm2('⚠️ ¿Borrar TODOS los datos? Esta acción no se puede deshacer.')) return;
+  db = { routes:[], cancelledClients:[], closings:[], settings:db.settings };
+  saveDB(); renderRoutes(); showToast('🗑 Datos borrados');
+}
+
+// ============================================================
+// INIT - Firebase Auth controls app startup
+// ============================================================
+// renderRoutes() is called after login via Firebase auth
+
+// Set up view init hooks
+const origShowView = showView;
+window.showView = function(id, push=true) {
+  origShowView(id, push);
+  if (id==='view-settings') renderSettings();
+  if (id==='view-closing') renderClosingView();
+};
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDfgwSVGpRXDwPtkgQw7-Btf5TtrqzHOPg",
+  authDomain: "prestayapro-799d2.firebaseapp.com",
+  projectId: "prestayapro-799d2",
+  storageBucket: "prestayapro-799d2.firebasestorage.app",
+  messagingSenderId: "600365632248",
+  appId: "1:600365632248:web:909464bdc9fe977195c90d"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const fdb = getFirestore(firebaseApp);
+const provider = new GoogleAuthProvider();
+
+window._fireApp = firebaseApp;
+window._fireUser = null;
+
+// Guardar en Firestore
+window.saveDB = async function() {
+  try { localStorage.setItem(DB_KEY, JSON.stringify(db)); } catch(e) {}
+  if (window._fireUser) {
+    try {
+      await setDoc(doc(fdb, 'prestaya_users', window._fireUser.uid), { data: JSON.stringify(db) });
+    } catch(e) { console.warn('Error guardando Firebase:', e); }
+  }
+};
+
+// Login con Google
+window.loginGoogle = async function() {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch(e) {
+    console.error('Error login:', e);
+    showToast('Error al iniciar sesión', 'error');
+  }
+};
+
+// Cerrar sesión
+window.logoutUser = async function() {
+  if (!confirm('¿Seguro que quieres cerrar sesión?')) return;
+  await signOut(auth);
+  location.reload();
+};
+
+// Detectar estado de autenticación
+onAuthStateChanged(auth, async (user) => {
+  const loginScreen = document.getElementById('login-screen');
+  window._fireUser = user;
+
+  if (user) {
+    // Ocultar login
+    if (loginScreen) loginScreen.style.display = 'none';
+
+    // Cargar datos desde Firestore
+    try {
+      const snap = await getDoc(doc(fdb, 'prestaya_users', user.uid));
+      if (snap.exists()) {
+        const parsed = JSON.parse(snap.data().data);
+        db = Object.assign({ routes:[], cancelledClients:[], closings:[], settings:{theme:'light'} }, parsed);
+      } else {
+        // Sin datos en la nube, intentar localStorage
+        try {
+          const raw = localStorage.getItem(DB_KEY);
+          if (raw) db = Object.assign({ routes:[], cancelledClients:[], closings:[], settings:{theme:'light'} }, JSON.parse(raw));
+        } catch(e) {}
+      }
+    } catch(e) {
+      console.warn('Error cargando Firebase:', e);
+    }
+
+    // Aplicar tema y arrancar app
+    applyTheme(db.settings?.theme || 'light');
+    renderRoutes();
+
+  } else {
+    // Mostrar login
+    if (loginScreen) loginScreen.style.display = 'flex';
+  }
+});
+</script>
+</body>
 </html>
