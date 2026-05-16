@@ -267,6 +267,7 @@ let currentRouteId = null;
 let currentClientId = null;
 let currentCreditId = null;
 let currentClientIndex = 0;
+let currentClientTab = 'info';
 let lastViewStack = [];
 let routeScrollPos = 0;
 let unlockedRoutes = {};
@@ -744,6 +745,7 @@ function openClientDetail(clientId) {
   currentClientId = clientId;
   const clients = (r.clients||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0));
   currentClientIndex = clients.findIndex(c=>c.id===clientId);
+  currentClientTab = 'info';
   renderClientDetail();
   showView('view-client-detail');
 }
@@ -867,6 +869,7 @@ function renderClientDetail() {
 }
 
 function switchClientTab(tab) {
+  currentClientTab = tab;
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['info','payments','history'][i]===tab));
   document.querySelectorAll('.tab-content').forEach((t,i)=>t.classList.toggle('active',['ct-info','ct-payments','ct-history'][i]==='ct-'+tab));
 }
@@ -878,6 +881,7 @@ function navigateClient(dir) {
   if (nidx < 0 || nidx >= clients.length) { showToast(dir<0?'Primer cliente':'Último cliente'); return; }
   currentClientIndex = nidx;
   renderClientDetail();
+  if (currentClientTab !== 'info') switchClientTab(currentClientTab);
   window.scrollTo(0,0);
 }
 
