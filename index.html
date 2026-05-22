@@ -456,7 +456,7 @@ function getPaidTodayBadge(credit) {
 }
 
 function getTodayBadge(credit) {
-  return isPaymentDueOnDate(credit, today()) ? '<span class="badge badge-blue">📅 HOY</span>' : '';
+  return ''; // Badge HOY eliminado
 }
 
 function ensureRouteAccess(route) {
@@ -639,7 +639,6 @@ function getStatusBadge(credit) {
   if (!credit || !credit.active) return '<span class="badge badge-gray">Finalizado</span>';
   const s = getDayStatus(credit);
   if (!s) return '';
-  if (s.diff === 0) return `<span class="badge" style="background:#0d9488;color:#fff;border:none;">✅ Canceló Hoy</span>`;
   if (!s.isOverdue) return `<span class="badge badge-green">⏳ ${s.diff}d restantes</span>`;
   const o = s.overdue;
   if (o <= 15) return `<span class="badge badge-orange-light">⚠️ ${o}d vencido</span>`;
