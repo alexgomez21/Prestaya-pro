@@ -1069,13 +1069,68 @@ function renderClosingsHistory() {
   const closings=(window._db.closings||[]).slice().sort((a,b)=>b.date.localeCompare(a.date));
   if(!closings.length){el.innerHTML='<div class="empty-state" style="padding:20px;"><p>Sin cierres</p></div>';return;}
   el.innerHTML=closings.map(c=>{const r=window._db.routes.find(x=>x.id===c.routeId);
-    return`<div class="closing-row">
-      <div style="display:flex;justify-content:space-between;align-items:start;">
-        <div><div style="font-weight:700;">${fmtDate(c.date)} · ${r?r.name:'?'}</div>
-          <div style="font-size:12px;color:var(--text3);">Abonos: ${formatCOP(c.paymentTotal)} · Préstamos: ${formatCOP(c.loanTotal)}</div></div>
-        <b style="color:${c.diferencia>=0?'var(--success)':'var(--danger)'}">${c.diferencia>=0?'+':''}${formatCOP(c.diferencia)}</b>
-      </div></div>`;}).join('');
+    const dif=c.diferencia||0;
+    return`<div class="closing-row" onclick="showClosingDetail('${c.id}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-weight:700;">${fmtDate(c.date)} · ${r?r.name:'?'}</div>
+          <div style="font-size:12px;color:var(--text3);">Abonos: ${formatCOP(c.paymentTotal)} · Préstamos: ${formatCOP(c.loanTotal)}</div>
+          <div style="font-size:12px;color:var(--text3);">Gastos: ${formatCOP(c.gastos||0)} · Base: ${formatCOP(c.base||0)}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-weight:700;color:${dif>=0?'var(--success)':'var(--danger)'};">${dif>=0?'+':''}${formatCOP(dif)}</div>
+          <div style="font-size:11px;color:var(--text3);">diferencia</div>
+        </div>
+      </div>
+    </div>`;}).join('');
 }
+
+window.showClosingDetail = function(closingId) {
+  const c=(window._db.closings||[]).find(x=>x.id===closingId);if(!c)return;
+  const r=window._db.routes.find(x=>x.id===c.routeId);
+  const dif=c.diferencia||0;
+  openModal(`<div class="modal-title">📊 Cierre ${fmtDate(c.date)} <button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:14px;">Ruta: <b>${r?r.name:'?'}</b></div>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;">
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span>💵 Abonos</span><b>${formatCOP(c.paymentTotal)}</b>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span>📤 Préstamos</span><b style="color:var(--danger)">-${formatCOP(c.loanTotal)}</b>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span>💸 Gastos</span><b style="color:var(--danger)">-${formatCOP(c.gastos||0)}</b>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span>💼 Base ingresada</span><b style="color:var(--success)">+${formatCOP(c.base||0)}</b>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span>➖ Descuentos</span><b style="color:var(--danger)">-${formatCOP(c.descuento||0)}</b>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span>✅ Tarjetas canceladas</span><b>${c.finishedCount||0}</b>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--border);">
+        <span><b>Calculado</b></span><b>${formatCOP(c.calculado||0)}</b>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--border);">
+        <span><b>Efectivo real</b></span><b>${formatCOP(c.efectivo||0)}</b>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;background:var(--bg3);border-radius:8px;padding:10px 12px;margin-top:4px;">
+        <b style="font-size:16px;">Diferencia</b>
+        <b style="font-size:16px;color:${dif>=0?'var(--success)':'var(--danger)'};">${dif>=0?'+':''}${formatCOP(dif)}</b>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px;">
+      <button class="btn btn-danger btn-sm" onclick="deleteClosing('${c.id}')">🗑 Eliminar</button>
+    </div>`);
+};
+
+window.deleteClosing = function(id) {
+  if(!confirm2('¿Eliminar este cierre?'))return;
+  window._db.closings=window._db.closings.filter(c=>c.id!==id);
+  saveDB();closeModal();renderClosingsHistory();showToast('🗑 Cierre eliminado');
+};
 
 window.exportClosingExcel = function() {
   const closings=(window._db.closings||[]).slice().sort((a,b)=>a.date.localeCompare(b.date));
