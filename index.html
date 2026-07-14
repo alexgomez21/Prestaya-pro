@@ -1022,7 +1022,37 @@ window.updateClosingPreview = function() {
     <div style="display:flex;justify-content:space-between;"><span>💵 Abonos:</span><b>${formatCOP(data.paymentTotal)}</b></div>
     <div style="display:flex;justify-content:space-between;margin-top:4px;"><span>📤 Préstamos:</span><b>${formatCOP(data.loanTotal)}</b></div>
     <div style="display:flex;justify-content:space-between;margin-top:4px;"><span>✅ Canceladas:</span><b>${data.finishedCount}</b></div>
+    <div style="margin-top:10px;">
+      <button class="btn btn-ghost btn-sm btn-full" onclick="showClosingLiveDetails('${routeId}','${dateStr}')">🔍 Ver detalles del día</button>
+    </div>
   </div>`;calcClosing();
+};
+
+window.showClosingLiveDetails = function(routeId, dateStr) {
+  const data = getClosingData(routeId, dateStr);
+  const r = window._db.routes.find(x=>x.id===routeId);
+  let html = `<div class="modal-title">🔍 Detalles ${fmtDate(dateStr)} <button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:12px;">Ruta: <b>${r?r.name:'?'}</b></div>`;
+
+  // Abonos
+  html += `<div style="font-weight:700;margin-bottom:8px;">💵 Abonos (${data.payments.length})</div>`;
+  if(!data.payments.length) html += `<p style="color:var(--text3);font-size:13px;margin-bottom:10px;">Sin abonos este día</p>`;
+  else html += data.payments.map(p=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:14px;"><span>${p.client}</span><b>${formatCOP(p.amount)}</b></div>`).join('');
+
+  // Préstamos nuevos
+  html += `<div style="font-weight:700;margin:14px 0 8px;">📤 Créditos nuevos (${data.loans.length})</div>`;
+  if(!data.loans.length) html += `<p style="color:var(--text3);font-size:13px;margin-bottom:10px;">Sin créditos nuevos este día</p>`;
+  else html += data.loans.map(l=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:14px;"><span>${l.client}</span><b>${formatCOP(l.amount)}</b></div>`).join('');
+
+  // Tarjetas canceladas
+  html += `<div style="font-weight:700;margin:14px 0 8px;">✅ Tarjetas canceladas (${data.finishedCards.length})</div>`;
+  if(!data.finishedCards.length) html += `<p style="color:var(--text3);font-size:13px;">Sin tarjetas canceladas este día</p>`;
+  else html += data.finishedCards.map(f=>`<div style="padding:7px 0;border-bottom:1px solid var(--border);font-size:14px;">
+    <div style="display:flex;justify-content:space-between;"><span>${f.client}</span><b>${formatCOP(f.total)}</b></div>
+    <div style="font-size:12px;color:var(--text3);">Último abono: ${formatCOP(f.lastPayment)}</div>
+  </div>`).join('');
+
+  openModal(html);
 };
 
 window.calcClosing = function() {
@@ -1089,41 +1119,79 @@ window.showClosingDetail = function(closingId) {
   const c=(window._db.closings||[]).find(x=>x.id===closingId);if(!c)return;
   const r=window._db.routes.find(x=>x.id===c.routeId);
   const dif=c.diferencia||0;
-  openModal(`<div class="modal-title">📊 Cierre ${fmtDate(c.date)} <button class="btn-icon" onclick="closeModal()">✕</button></div>
+  openModal(`<div class="modal-title">📊 ${fmtDate(c.date)} <button class="btn-icon" onclick="closeModal()">✕</button></div>
     <div style="font-size:13px;color:var(--text3);margin-bottom:14px;">Ruta: <b>${r?r.name:'?'}</b></div>
-    <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;">
-      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+    <div style="display:flex;flex-direction:column;gap:0;font-size:14px;">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
         <span>💵 Abonos</span><b>${formatCOP(c.paymentTotal)}</b>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
         <span>📤 Préstamos</span><b style="color:var(--danger)">-${formatCOP(c.loanTotal)}</b>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
         <span>💸 Gastos</span><b style="color:var(--danger)">-${formatCOP(c.gastos||0)}</b>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
-        <span>💼 Base ingresada</span><b style="color:var(--success)">+${formatCOP(c.base||0)}</b>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+        <span>💼 Base</span><b style="color:var(--success)">+${formatCOP(c.base||0)}</b>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
         <span>➖ Descuentos</span><b style="color:var(--danger)">-${formatCOP(c.descuento||0)}</b>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
         <span>✅ Tarjetas canceladas</span><b>${c.finishedCount||0}</b>
       </div>
       <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--border);">
-        <span><b>Calculado</b></span><b>${formatCOP(c.calculado||0)}</b>
+        <b>Calculado</b><b>${formatCOP(c.calculado||0)}</b>
       </div>
       <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--border);">
-        <span><b>Efectivo real</b></span><b>${formatCOP(c.efectivo||0)}</b>
+        <b>Efectivo real</b><b>${formatCOP(c.efectivo||0)}</b>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:10px 0;background:var(--bg3);border-radius:8px;padding:10px 12px;margin-top:4px;">
+      <div style="display:flex;justify-content:space-between;background:var(--bg3);border-radius:8px;padding:12px;margin-top:8px;">
         <b style="font-size:16px;">Diferencia</b>
         <b style="font-size:16px;color:${dif>=0?'var(--success)':'var(--danger)'};">${dif>=0?'+':''}${formatCOP(dif)}</b>
       </div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:16px;">
+    <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal();showClosingLiveDetails('${c.routeId}','${c.date}')">🔍 Ver detalles</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal();openEditClosingModal('${c.id}')">✏️ Editar</button>
       <button class="btn btn-danger btn-sm" onclick="deleteClosing('${c.id}')">🗑 Eliminar</button>
     </div>`);
+};
+
+window.openEditClosingModal = function(closingId) {
+  const c=(window._db.closings||[]).find(x=>x.id===closingId);if(!c)return;
+  const r=window._db.routes.find(x=>x.id===c.routeId);
+  openModal(`<div class="modal-title">✏️ Editar Cierre <button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:12px;">${fmtDate(c.date)} · ${r?r.name:'?'}</div>
+    <div class="form-row">
+      <div class="form-group"><label>Abonos (miles)</label><input class="form-control" id="ec-pmt" type="number" value="${(c.paymentTotal||0)/1000}" inputmode="numeric"></div>
+      <div class="form-group"><label>Préstamos (miles)</label><input class="form-control" id="ec-loan" type="number" value="${(c.loanTotal||0)/1000}" inputmode="numeric"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Gastos (miles)</label><input class="form-control" id="ec-gastos" type="number" value="${(c.gastos||0)/1000}" inputmode="numeric"></div>
+      <div class="form-group"><label>Base (miles)</label><input class="form-control" id="ec-base" type="number" value="${(c.base||0)/1000}" inputmode="numeric"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Descuentos (miles)</label><input class="form-control" id="ec-desc" type="number" value="${(c.descuento||0)/1000}" inputmode="numeric"></div>
+      <div class="form-group"><label>Efectivo real (miles)</label><input class="form-control" id="ec-ef" type="number" value="${(c.efectivo||0)/1000}" inputmode="numeric"></div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal();showClosingDetail('${c.id}')">← Volver</button>
+      <button class="btn btn-primary btn-full" onclick="updateClosing('${closingId}')">💾 Guardar cambios</button>
+    </div>`);
+};
+
+window.updateClosing = function(closingId) {
+  const c=(window._db.closings||[]).find(x=>x.id===closingId);if(!c)return;
+  c.paymentTotal=(parseFloat(document.getElementById('ec-pmt').value)||0)*1000;
+  c.loanTotal=(parseFloat(document.getElementById('ec-loan').value)||0)*1000;
+  c.gastos=(parseFloat(document.getElementById('ec-gastos').value)||0)*1000;
+  c.base=(parseFloat(document.getElementById('ec-base').value)||0)*1000;
+  c.descuento=(parseFloat(document.getElementById('ec-desc').value)||0)*1000;
+  c.efectivo=(parseFloat(document.getElementById('ec-ef').value)||0)*1000;
+  c.calculado=c.paymentTotal-c.loanTotal-c.gastos+c.base-c.descuento;
+  c.diferencia=c.efectivo-c.calculado;
+  saveDB();closeModal();renderClosingsHistory();showToast('✅ Cierre actualizado');
 };
 
 window.deleteClosing = function(id) {
