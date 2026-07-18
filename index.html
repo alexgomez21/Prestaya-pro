@@ -600,6 +600,26 @@ window.switchRouteTab = function(tab) {
   if(tab==='overdue')renderOverdueList();
 };
 
+function getProgressBar(cr) {
+  if(!cr) return '';
+  const paid=(cr.payments||[]).reduce((s,p)=>s+p.amount,0);
+  const pct=cr.amountToPay>0?Math.min(100,Math.round(paid/cr.amountToPay*100)):0;
+  const s=getDayStatus(cr);
+  let color='#3182ce';
+  if(pct>=100) color='#38a169';
+  else if(!cr.active) color='#38a169';
+  else if(s&&s.isOverdue&&s.overdue>60) color='#e53e3e';
+  else if(s&&s.isOverdue&&s.overdue>30) color='#fc8181';
+  else if(s&&s.isOverdue) color='#ed8936';
+  else if(pct>=75) color='#38a169';
+  return `<div style="display:flex;align-items:center;gap:7px;margin-top:6px;">
+    <div style="flex:1;height:5px;background:var(--bg3);border-radius:4px;overflow:hidden;">
+      <div style="width:${pct}%;height:100%;background:${color};border-radius:4px;transition:width 0.3s;"></div>
+    </div>
+    <span style="font-size:11px;font-weight:700;color:${color};min-width:30px;text-align:right;">${pct}%</span>
+  </div>`;
+}
+
 function renderClientsList(filterStr='') {
   const r=getRoute(); if(!r)return;
   const el=document.getElementById('clients-list');
@@ -613,12 +633,14 @@ function renderClientsList(filterStr='') {
     const isNew=c.createdAt===today()?'<span class="badge badge-blue">✨ NEW</span>':'';
     const rc=getRowClass(cr);
     const initials=c.name.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+    const progressBar=getProgressBar(cr);
     return`<div class="client-row" ${rc} onclick="openClientDetail('${c.id}')">
       <div class="client-avatar">${initials}</div>
       <div class="client-info">
         <div class="client-name">${c.name}</div>
         <div class="client-sub">${c.cedula}${cr&&cr.active?' · Saldo: '+formatCOP(bal):''}</div>
         <div style="margin-top:4px;display:flex;gap:6px;flex-wrap:wrap;">${isNew}${paidToday}${sb}</div>
+        ${progressBar}
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;">
         <button class="reorder-btn" onclick="event.stopPropagation();moveClient('${c.id}',-1)">↑</button>
@@ -913,22 +935,85 @@ function renderRouteStats() {
     (c.credits||[]).filter(cr2=>!cr2.active).forEach(cr2=>{const p2=(cr2.payments||[]).reduce((s,p)=>s+p.amount,0);if(p2>=cr2.amountToPay){cancelledCount++;cancelledUtility+=(cr2.amountToPay-cr2.amountLent);}});
   });
   const overdue30=clients.filter(c=>{const cr=getActiveCredit(c);if(!cr||!cr.active)return false;const s=getDayStatus(cr);return s&&s.isOverdue&&s.overdue>30;});
-  el.innerHTML=`<div style="font-weight:700;font-size:16px;margin-bottom:12px;">📊 ${r.name}</div>
+  const overdue60=clients.filter(c=>{const cr=getActiveCredit(c);if(!cr||!cr.active)return false;const s=getDayStatus(cr);return s&&s.isOverdue&&s.overdue>60;});
+  const saldo30=overdue30.reduce((s,c)=>s+getClientBalance(c),0);
+  const saldo60=overdue60.reduce((s,c)=>s+getClientBalance(c),0);
+  const avgI=iCount>0?(sumI/iCount).toFixed(1):0;
+  const avgMI=iCount>0?(sumMI/iCount).toFixed(1):0;
+  el.innerHTML=`<div style="font-weight:700;font-size:16px;margin-bottom:12px;">📊 Resumen: ${r.name}</div>
     <div class="stat-grid">
       <div class="stat-card"><div class="stat-value">${clients.length}</div><div class="stat-label">Total Clientes</div></div>
       <div class="stat-card"><div class="stat-value">${activeClients}</div><div class="stat-label">Activos</div></div>
       <div class="stat-card"><div class="stat-value">${cancelledCount}</div><div class="stat-label">Cancelados</div></div>
       <div class="stat-card"><div class="stat-value">${overdue30.length}</div><div class="stat-label">Vencidos +30d</div></div>
-    </div><div class="divider"></div>
+    </div>
+    <div class="divider"></div>
     <div class="stat-grid">
-      <div class="stat-card"><div class="stat-value" style="font-size:15px;">${formatCOP(totalLent)}</div><div class="stat-label">Capital</div></div>
+      <div class="stat-card"><div class="stat-value" style="font-size:15px;">${formatCOP(totalLent)}</div><div class="stat-label">Capital prestado</div></div>
+      <div class="stat-card"><div class="stat-value" style="font-size:15px;">${formatCOP(totalWithInterest)}</div><div class="stat-label">Con intereses</div></div>
       <div class="stat-card"><div class="stat-value" style="font-size:15px;">${formatCOP(totalBalance)}</div><div class="stat-label">Saldo total</div></div>
+      <div class="stat-card"><div class="stat-value" style="font-size:15px;">${formatCOP(totalPaid)}</div><div class="stat-label">Recaudado</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-value">${avgI}%</div><div class="stat-label">Interés promedio</div></div>
+      <div class="stat-card"><div class="stat-value">${avgMI}%</div><div class="stat-label">Interés mensual prom.</div></div>
       <div class="stat-card"><div class="stat-value" style="font-size:15px;">${formatCOP(totalUtility)}</div><div class="stat-label">Utilidad activos</div></div>
       <div class="stat-card"><div class="stat-value" style="font-size:15px;">${formatCOP(cancelledUtility)}</div><div class="stat-label">Utilidad cancelados</div></div>
     </div>
     <div class="divider"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-ghost btn-sm" onclick="exportRouteExcel()">📊 Exportar Excel</button></div>`;
+    <div class="info-box" style="margin-bottom:8px;">📦 Saldo vencidos +30d: <b>${formatCOP(saldo30)}</b></div>
+    <div class="info-box" style="background:var(--red-light-bg);border-color:var(--red-light-border);color:var(--red-light-text);margin-bottom:12px;">🔴 Saldo vencidos +60d: <b>${formatCOP(saldo60)}</b></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-ghost btn-sm" onclick="exportRouteSummaryExcel()">📊 Exportar resumen</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportRouteExcel()">📋 Exportar clientes</button>
+    </div>`;
 }
+
+window.exportRouteSummaryExcel = function() {
+  const r=getRoute();if(!r)return;
+  const clients=r.clients||[];
+  let activeClients=0,cancelledCount=0,totalLent=0,totalWithInterest=0,totalBalance=0,totalPaid=0,totalUtility=0,cancelledUtility=0,sumI=0,sumMI=0,iCount=0;
+  clients.forEach(c=>{
+    const cr=getActiveCredit(c);
+    if(cr&&cr.active){activeClients++;const paid=(cr.payments||[]).reduce((s,p)=>s+p.amount,0);totalLent+=cr.amountLent;totalWithInterest+=cr.amountToPay;totalBalance+=Math.max(0,cr.amountToPay-paid);totalPaid+=paid;totalUtility+=(cr.amountToPay-cr.amountLent);sumI+=cr.interest;sumMI+=cr.monthlyInterest;iCount++;}
+    (c.credits||[]).filter(cr2=>!cr2.active).forEach(cr2=>{const p2=(cr2.payments||[]).reduce((s,p)=>s+p.amount,0);if(p2>=cr2.amountToPay){cancelledCount++;cancelledUtility+=(cr2.amountToPay-cr2.amountLent);}});
+  });
+  const overdue30=clients.filter(c=>{const cr=getActiveCredit(c);if(!cr||!cr.active)return false;const s=getDayStatus(cr);return s&&s.isOverdue&&s.overdue>30;});
+  const overdue60=clients.filter(c=>{const cr=getActiveCredit(c);if(!cr||!cr.active)return false;const s=getDayStatus(cr);return s&&s.isOverdue&&s.overdue>60;});
+  const saldo30=overdue30.reduce((s,c)=>s+getClientBalance(c),0);
+  const saldo60=overdue60.reduce((s,c)=>s+getClientBalance(c),0);
+  const avgI=iCount>0?parseFloat((sumI/iCount).toFixed(1)):0;
+  const avgMI=iCount>0?parseFloat((sumMI/iCount).toFixed(1)):0;
+
+  const headers=['Ruta','Total Clientes','Activos','Cancelados','Capital Prestado','Con Intereses','Saldo Total','Recaudado','Interés Promedio %','Interés Mensual %','Utilidad Activos','Utilidad Cancelados','Vencidos +30d','Saldo Vencidos +30d','Vencidos +60d','Saldo Vencidos +60d'];
+  const values=[r.name,clients.length,activeClients,cancelledCount,totalLent,totalWithInterest,totalBalance,totalPaid,avgI,avgMI,totalUtility,cancelledUtility,overdue30.length,saldo30,overdue60.length,saldo60];
+
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet([headers,values]);
+
+  // Formato de moneda para columnas numéricas grandes
+  const moneycols=[4,5,6,7,10,11,13,15]; // índices base 0
+  const pctCols=[8,9];
+  const fmt='#,##0';
+  const pctFmt='0.0"%"';
+  if(!ws['!cols'])ws['!cols']=[];
+  headers.forEach((_,i)=>{ws['!cols'][i]={wch:18};});
+
+  // Aplicar formato a celdas de la fila 2 (índice 1)
+  moneycols.forEach(i=>{
+    const cellRef=XLSX.utils.encode_cell({r:1,c:i});
+    if(ws[cellRef]){ws[cellRef].t='n';ws[cellRef].z=fmt;}
+  });
+  pctCols.forEach(i=>{
+    const cellRef=XLSX.utils.encode_cell({r:1,c:i});
+    if(ws[cellRef]){ws[cellRef].t='n';ws[cellRef].z=pctFmt;}
+  });
+
+  XLSX.utils.book_append_sheet(wb,ws,'Resumen');
+  XLSX.writeFile(wb,`Resumen_${r.name}_${today()}.xlsx`);
+  showToast('✅ Resumen exportado');
+};
 
 function renderOverdueList() {
   const r=getRoute();const el=document.getElementById('route-overdue-content');
